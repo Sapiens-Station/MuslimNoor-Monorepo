@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: muslimnoor-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/muslimnoor
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    networks:
+      - muslimnoor-network
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - muslimnoor-network
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - muslimnoor-network
+
+volumes:
+  mongo-data:
+
+networks:
+  muslimnoor-network:
+    driver: bridge
