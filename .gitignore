@@ -1,0 +1,35 @@
+# Node.js (Backend)
+node_modules/
+dist/
+.env
+.cache
+.npm/
+.eslintcache
+logs/
+debug.log
+error.log
+
+# Flutter (App)
+flutter-app/.dart_tool/
+flutter-app/.flutter-plugins
+flutter-app/.flutter-plugins-dependencies
+flutter-app/.packages
+flutter-app/build/
+flutter-app/pubspec.lock
+
+# Admin Panel (React/Nuxt)
+admin-panel/node_modules/
+admin-panel/.env
+admin-panel/dist/
+admin-panel/.next/
+admin-panel/.nuxt/
+admin-panel/out/
+
+# System & Editor Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
