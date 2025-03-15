@@ -9,6 +9,18 @@ logs/
 debug.log
 error.log
 
+# Node.js (Backend)
+backend/node_modules/
+backend/package-lock.json
+backend/dist/
+backend/.env
+backend/.cache
+backend/.npm/
+backend/.eslintcache
+backend/logs/
+backend/debug.log
+backend/error.log
+
 # Flutter (App)
 flutter-app/.dart_tool/
 flutter-app/.flutter-plugins

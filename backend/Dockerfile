@@ -1,20 +1,20 @@
-# Use official Node.js LTS image
-FROM node:20
+# Use an official Node.js image
+FROM node:18
 
-# Set working directory inside the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json first (for efficient caching)
+# Copy package.json and package-lock.json to install dependencies
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies inside the container
 RUN npm install
 
-# Copy the entire backend source code
+# Copy the rest of the application files
 COPY . .
 
-# Expose the port NestJS runs on
+# Expose the application port
 EXPOSE 3000
 
-# Run the NestJS application
+# Start the NestJS application
 CMD ["npm", "run", "start"]
