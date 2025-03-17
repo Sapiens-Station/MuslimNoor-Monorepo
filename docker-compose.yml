@@ -4,7 +4,6 @@ services:
     container_name: muslimnoor-backend
     volumes:
       - ./backend:/app  # Keep this to sync your code
-      - /app/node_modules  # Prevent mounting node_modules from host
     env_file:
       - backend/.env
     ports:
