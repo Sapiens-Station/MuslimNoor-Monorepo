@@ -9,7 +9,7 @@ import { LoginDto, RegisterDto } from '../dto/auth.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(User.name) private readonly userModel: Model<User>, 
     private jwtService: JwtService,
   ) {}
 

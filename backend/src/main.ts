@@ -10,8 +10,8 @@ async function bootstrap() {
   app.enableCors();
 
   // ✅ Ensure Required Environment Variables
-  const mongoUri = process.env.MONGO_URI || 'mongodb://mongodb:27017/muslimnoor';
-  const redisHost = process.env.REDIS_HOST || 'redis';
+  const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/muslimnoor';
+  const redisHost = process.env.REDIS_HOST || '127.0.0.1';
   const redisPort = process.env.REDIS_PORT || '6379';
 
   if (!mongoUri || !redisHost || !redisPort) {

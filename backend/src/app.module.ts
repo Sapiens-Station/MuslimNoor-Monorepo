@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { CacheModule } from '@nestjs/cache-manager'; // ✅ Corrected Import
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -16,10 +16,18 @@ import { UserModule } from './user/user.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGO_URI'),
-        dbName: 'muslimnoor',
-      }),
+      useFactory: (configService: ConfigService) => {
+        const mongoUri = configService.get<string>('MONGO_URI');
+        const jwtSecret = configService.get<string>('JWT_SECRET'); // ✅ Get JWT_SECRET
+
+        // ✅ Print JWT_SECRET to confirm it's accessible
+        Logger.log(`✅ JWT_SECRET Loaded: ${jwtSecret}`, 'Config');
+
+        return {
+          uri: mongoUri,
+          dbName: 'muslimnoor',
+        };
+      },
     }),
 
     // ✅ Redis Cache Module (Uses @nestjs/cache-manager)
