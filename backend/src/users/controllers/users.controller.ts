@@ -4,7 +4,7 @@ import { UpdateUserDto } from '../dto/user.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 
 @Controller('users')
-export class UserController {
+export class UsersController {
   constructor(private readonly userService: UserService) {}
 
   @Get('profile')
@@ -16,6 +16,6 @@ export class UserController {
   @Put('update')
   @UseGuards(JwtAuthGuard)
   async updateUser(@Request() req, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.updateUser(req.user.id, updateUserDto);
+    return this.userService.update(req.user.id, updateUserDto);
   }
 }

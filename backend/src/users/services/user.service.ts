@@ -11,13 +11,19 @@ export class UserService {
   
   private users = [];
 
+  async findAll() : Promise<User[]> {
+    const users = await this.userModel.find().exec();
+    console.log('🔍 Users Retrieved:', users); // ✅ Debugging log
+    return users;
+  }
+
   async findById(id: string): Promise<User> {
     const user = await this.userModel.findById(id).select('-password');
     if (!user) throw new NotFoundException('User not found');
     return user;
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
     }
@@ -28,9 +34,8 @@ export class UserService {
     return updatedUser;
   }
 
-  async findAll() : Promise<User[]> {
-    const users = await this.userModel.find().exec();
-    console.log('🔍 Users Retrieved:', users); // ✅ Debugging log
-    return users;
+  async delete(id: string): Promise<{ message: string }> {
+    await this.userModel.findByIdAndDelete(id);
+    return { message: 'User deleted successfully' };
   }
 }

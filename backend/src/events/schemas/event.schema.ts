@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, HydratedDocument } from 'mongoose';
 
+export type EventDocument = HydratedDocument<Event>;
 @Schema({ timestamps: true })
 export class Event extends Document {
   @Prop({ required: true })

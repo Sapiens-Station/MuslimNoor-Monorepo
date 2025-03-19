@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as redisStore from 'cache-manager-redis-store'; // ✅ Import Redis store
 import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
+import { UsersModule } from './users/users.module';
 import { AdminModule } from './admin/admin.module';
 import { PrayersModule } from './prayers/prayers.module';
 import { DonationsModule } from './donations/donations.module';
@@ -48,7 +48,7 @@ import { EventsModule } from './events/events.module';
 
     // ✅ Application Modules
     AuthModule,
-    UserModule,
+    UsersModule,
     AdminModule,
     EventsModule,
     DonationsModule,
