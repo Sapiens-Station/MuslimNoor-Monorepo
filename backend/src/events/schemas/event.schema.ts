@@ -7,17 +7,17 @@ export class Event extends Document {
   @Prop({ required: true })
   title: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   description: string;
 
-  @Prop({ required: true })
-  date: Date;
+  @Prop({ required: true }) // ✅ Store full timestamp
+  timestamp: Date;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   location: string;
 
-  @Prop({ required: true })
-  imageUrl: string; // Store event image
+  @Prop({ required: false })
+  imageUrl?: string; // Store event image
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

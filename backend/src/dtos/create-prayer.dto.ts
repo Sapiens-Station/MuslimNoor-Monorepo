@@ -1,13 +1,20 @@
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsEnum, IsISO8601, IsOptional, IsString } from 'class-validator';
+import { PrayerName } from 'src/prayers/schemas/prayer.schema';
 
 export class CreatePrayerDto {
-  @IsNotEmpty()
-  @IsString()
-  name: string; // e.g., Fajr, Dhuhr, Asr, Maghrib, Isha
+  @IsEnum(PrayerName)
+  name: PrayerName;
 
-  @IsNotEmpty()
+  @IsISO8601() // ✅ Ensure valid timestamp format (YYYY-MM-DDTHH:mm:ss.sssZ)
+  timestamp: string; // ✅ Timestamp is a string in DTOs
+
+  @IsOptional()
   @IsString()
-  time: string; // e.g., "05:30 AM"
+  location?: string; // Example: 'Mosque', 'Home', 'Workplace'
+
+  @IsOptional()
+  @IsEnum(['pending', 'completed', 'missed'])
+  status?: string;
 
   @IsOptional()
   @IsString()
