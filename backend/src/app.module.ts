@@ -9,6 +9,8 @@ import { AdminModule } from './admin/admin.module';
 import { PrayersModule } from './prayers/prayers.module';
 import { DonationsModule } from './donations/donations.module';
 import { EventsModule } from './events/events.module';
+import { JamatModule } from './jamats/jamat.module';
+import { PrayerTimesModule } from './prayer-time/prayer-times.module';
 
 @Module({
   imports: [
@@ -53,6 +55,8 @@ import { EventsModule } from './events/events.module';
     EventsModule,
     DonationsModule,
     PrayersModule,
+    JamatModule,
+    PrayerTimesModule,
   ],
 })
 export class AppModule {}
