@@ -5,6 +5,9 @@ import { Document } from 'mongoose';
 export class Jamat extends Document {
   @Prop({ required: true })
   mosqueId: string;
+  
+  @Prop({ required: true })
+  date: string; 
 
   @Prop({
     type: [{
