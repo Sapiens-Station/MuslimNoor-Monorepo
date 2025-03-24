@@ -11,6 +11,10 @@ import { DonationsModule } from './donations/donations.module';
 import { EventsModule } from './events/events.module';
 import { JamatModule } from './jamats/jamat.module';
 import { PrayerTimesModule } from './prayer-time/prayer-times.module';
+import { NotificationSchedulerModule } from './notification-scheduler/notification-scheduler.module';
+import { NotificationModule } from './notification/notification.module';
+import { MosquesModule } from './mosques/mosques.module';
+import { SalatTrackingModule } from './salat-tracking/salat-tracking.module';
 
 @Module({
   imports: [
@@ -57,6 +61,10 @@ import { PrayerTimesModule } from './prayer-time/prayer-times.module';
     PrayersModule,
     JamatModule,
     PrayerTimesModule,
+    NotificationSchedulerModule,
+    NotificationModule,
+    MosquesModule,
+    SalatTrackingModule
   ],
 })
 export class AppModule {}

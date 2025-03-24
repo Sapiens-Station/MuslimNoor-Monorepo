@@ -13,5 +13,6 @@ import { PrayerTimesModule } from 'src/prayer-time/prayer-times.module';
   ],
   controllers: [JamatController],
   providers: [JamatService],
+  exports: [JamatService],
 })
 export class JamatModule {}

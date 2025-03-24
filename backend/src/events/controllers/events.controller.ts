@@ -3,11 +3,10 @@ import { EventService } from '../services/event.service';
 import { CreateEventDto } from '../../dtos/create-event.dto';
 import { UpdateEventDto } from '../../dtos/update-event.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../../auth/guards/roles.guard';
 import { Roles } from '../../auth/decorators/roles.decorator';
 
 @Controller('events')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard)
 export class EventsController {
   constructor(private readonly eventService: EventService) {}
 
