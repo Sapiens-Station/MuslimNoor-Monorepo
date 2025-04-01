@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, HydratedDocument } from 'mongoose';
+import { Document, HydratedDocument, Types } from 'mongoose';
 
-export type DonationDocument = HydratedDocument<Donation>;
-
+export type DonationDocument = Donation & Document & { _id: Types.ObjectId };
 @Schema({ timestamps: true })
 export class Donation extends Document {
   @Prop({ required: true })
@@ -43,3 +42,5 @@ export class Donation extends Document {
 }
 
 export const DonationSchema = SchemaFactory.createForClass(Donation);
+
+

@@ -4,6 +4,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import mongoose from 'mongoose';
 import { Cache } from 'cache-manager';
+import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -49,6 +50,10 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+
+  app.use('/donations/webhook', express.raw({ type: 'application/json' }));
+  app.use(express.json());
+
 
   // ✅ Start the Server on Port 3000 (Listen on 0.0.0.0 for Docker)
   await app.listen(3000, '0.0.0.0');

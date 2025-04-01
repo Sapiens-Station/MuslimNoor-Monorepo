@@ -64,7 +64,7 @@ import { SalatTrackingModule } from './salat-tracking/salat-tracking.module';
     NotificationSchedulerModule,
     NotificationModule,
     MosquesModule,
-    SalatTrackingModule
+    SalatTrackingModule,
   ],
 })
 export class AppModule {}
