@@ -38,7 +38,7 @@ onMounted(async () => {
         :src="event.imageUrl"
         alt="Event Image"
         class="w-full rounded-lg"
-      />
+      >
       <p class="text-gray-800">{{ event.description }}</p>
     </div>
   </div>

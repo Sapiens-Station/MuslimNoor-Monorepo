@@ -5,7 +5,7 @@
       :src="event.imageUrl"
       alt="Event image"
       class="w-full h-40 object-cover"
-    />
+    >
     <div class="p-4">
       <h2 class="text-lg font-bold">{{ event.title }}</h2>
       <p class="text-sm text-gray-600">{{ event.date }}</p>

@@ -3,6 +3,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useEvents } from '@/composables/useEvents'
 import { ref, onMounted } from 'vue'
 import EventForm from '@/components/events/EventForm.vue'
+import type { EventFormInterface } from '~/interfaces/event.interface'
 
 const route = useRoute()
 const router = useRouter()
@@ -15,14 +16,18 @@ const error = ref('')
 onMounted(async () => {
   try {
     event.value = await fetchEventById(route.params.id as string)
-  } catch (err: any) {
-    error.value = err.message
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      error.value = err.message
+    } else {
+      error.value = 'An unexpected error occurred.'
+    }
   } finally {
     loading.value = false
   }
 })
 
-const handleUpdate = async (formData: any) => {
+const handleUpdate = async (formData: EventFormInterface) => {
   try {
     await updateEvent(route.params.id as string, formData)
     router.push(`/events/${route.params.id}`)

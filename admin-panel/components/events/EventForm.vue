@@ -7,7 +7,7 @@
         type="text"
         required
         class="w-full border px-3 py-2 rounded"
-      />
+      >
     </div>
 
     <div>
@@ -17,7 +17,7 @@
         type="date"
         required
         class="w-full border px-3 py-2 rounded"
-      />
+      >
     </div>
 
     <div>
@@ -26,7 +26,7 @@
         v-model="form.description"
         rows="4"
         class="w-full border px-3 py-2 rounded"
-      ></textarea>
+      />
     </div>
 
     <div>
@@ -37,7 +37,7 @@
         v-model="form.imageUrl"
         type="url"
         class="w-full border px-3 py-2 rounded"
-      />
+      >
     </div>
 
     <div class="pt-4">
@@ -53,6 +53,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useUser } from '~/composables/useUser';
+import type { EventFormInterface } from '~/interfaces/event.interface';
+const { user, fetchUser } = useUser()
+await fetchUser()
+
+const selectedMosqueId = computed(() => user.value?.mosqueId || '')
 
 const props = defineProps<{
   initialData?: {
@@ -61,7 +67,7 @@ const props = defineProps<{
     date: string
     imageUrl?: string
   }
-  onSubmit: (formData: any) => Promise<void>
+  onSubmit: (formData: EventFormInterface) => Promise<void>
   submitLabel?: string
 }>()
 
@@ -73,6 +79,11 @@ const form = ref({
 })
 
 const handleSubmit = async () => {
-  await props.onSubmit(form.value)
+  const fullData: EventFormInterface = {
+    ...form.value,
+    mosqueId: selectedMosqueId.value
+  }
+
+  await props.onSubmit(fullData)
 }
 </script>
