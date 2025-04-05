@@ -2,11 +2,12 @@
 import { useRouter } from 'vue-router'
 import { useEvents } from '@/composables/useEvents'
 import EventForm from '@/components/events/EventForm.vue'
+import type { EventFormInterface } from '~/interfaces/event.interface'
 
 const { createEvent } = useEvents()
 const router = useRouter()
 
-const handleCreate = async (formData: any) => {
+const handleCreate = async (formData: EventFormInterface) => {
   try {
     await createEvent(formData)
     router.push('/events')

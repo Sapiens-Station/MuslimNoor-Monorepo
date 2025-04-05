@@ -39,7 +39,11 @@ const handleUpdate = async (formData: any) => {
 
     <div v-if="event">
       <h1 class="text-2xl font-bold mb-4">Edit Event</h1>
-      <EventForm :initial-data="event" :on-submit="handleUpdate" submit-label="Update Event" />
+      <EventForm
+        :initial-data="event"
+        :on-submit="handleUpdate"
+        submit-label="Update Event"
+      />
     </div>
   </div>
 </template>

@@ -1,7 +1,7 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, HydratedDocument } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document, HydratedDocument } from 'mongoose'
 
-export type PrayerDocument = HydratedDocument<Prayer>;
+export type PrayerDocument = HydratedDocument<Prayer>
 
 export enum PrayerName {
   FAJR = 'Fajr',
@@ -14,19 +14,19 @@ export enum PrayerName {
 @Schema({ timestamps: true }) // ✅ Automatically adds `createdAt` & `updatedAt`
 export class Prayer extends Document {
   @Prop({ required: true, enum: PrayerName }) // ✅ Prayer name using ENUM
-  name: PrayerName;
+  name: PrayerName
 
   @Prop({ required: true, type: Date }) // ✅ Stores full timestamp
-  timestamp: Date;
+  timestamp: Date
 
   @Prop({ default: 'mosque' })
-  location: string; // Example: 'Mosque', 'Home', 'Workplace'
+  location: string // Example: 'Mosque', 'Home', 'Workplace'
 
   @Prop({ enum: ['pending', 'completed', 'missed'], default: 'pending' }) // ✅ Tracks performance
-  status: string;
+  status: string
 
   @Prop({ default: '' }) // ✅ Any additional notes about the prayer
-  notes?: string;
+  notes?: string
 }
 
-export const PrayerSchema = SchemaFactory.createForClass(Prayer);
+export const PrayerSchema = SchemaFactory.createForClass(Prayer)

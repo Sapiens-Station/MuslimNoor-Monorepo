@@ -1,51 +1,59 @@
-import { IsNotEmpty, IsString, IsNumber, IsOptional, IsBoolean, IsISO8601, IsDateString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsNumber,
+  IsOptional,
+  IsBoolean,
+  IsISO8601,
+  IsDateString,
+} from 'class-validator'
 
 export class CreateDonationDto {
   @IsNotEmpty()
   @IsString()
-  donorName: string;
+  donorName: string
 
   @IsOptional()
   @IsString()
-  donorEmail?: string;
+  donorEmail?: string
 
   @IsNotEmpty()
   @IsNumber()
-  amount: number;
+  amount: number
 
   @IsNotEmpty()
   @IsString()
-  transactionId: string;
+  transactionId: string
 
   @IsNotEmpty()
   @IsString()
-  paymentMethod: string; // e.g., PayPal, Bank Transfer
+  paymentMethod: string // e.g., PayPal, Bank Transfer
 
   @IsOptional()
   @IsString()
-  receiptUrl?: string; // URL to a digital receipt
+  receiptUrl?: string // URL to a digital receipt
 
   @IsOptional()
   @IsString()
-  message?: string;
-  
+  message?: string
+
   @IsOptional()
   @IsDateString() // ✅ Ensures valid date format (ISO 8601)
-  timestamp?: string; // Allow user to send timestamp or use default
+  timestamp?: string // Allow user to send timestamp or use default
 
   @IsOptional()
   @IsString()
-  category?: string; // Default will be 'general'
+  category?: string // Default will be 'general'
 
   @IsOptional()
   @IsString()
-  status?: string; // Default will be 'pending'
+  status?: string // Default will be 'pending'
 
   @IsOptional()
   @IsBoolean()
-  anonymous?: boolean;
+  anonymous?: boolean
 
   @IsOptional()
   @IsBoolean()
-  verifiedByAdmin?: boolean;
+  verifiedByAdmin?: boolean
 }

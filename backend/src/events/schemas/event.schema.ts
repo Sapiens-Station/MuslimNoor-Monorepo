@@ -1,23 +1,23 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, HydratedDocument } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document, HydratedDocument } from 'mongoose'
 
-export type EventDocument = HydratedDocument<Event>;
+export type EventDocument = HydratedDocument<Event>
 @Schema({ timestamps: true })
 export class Event extends Document {
   @Prop({ required: true })
-  title: string;
+  title: string
 
   @Prop({ required: false })
-  description: string;
+  description: string
 
   @Prop({ required: true }) // ✅ Store full timestamp
-  timestamp: Date;
+  timestamp: Date
 
   @Prop({ required: false })
-  location: string;
+  location: string
 
   @Prop({ required: false })
-  imageUrl?: string; // Store event image
+  imageUrl?: string // Store event image
 }
 
-export const EventSchema = SchemaFactory.createForClass(Event);
+export const EventSchema = SchemaFactory.createForClass(Event)

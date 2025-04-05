@@ -1,20 +1,20 @@
-import { Logger, Module } from '@nestjs/common';
-import { CacheModule } from '@nestjs/cache-manager'; // ✅ Corrected Import
-import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import * as redisStore from 'cache-manager-redis-store'; // ✅ Import Redis store
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { AdminModule } from './admin/admin.module';
-import { PrayersModule } from './prayers/prayers.module';
-import { DonationsModule } from './donations/donations.module';
-import { EventsModule } from './events/events.module';
-import { JamatModule } from './jamats/jamat.module';
-import { PrayerTimesModule } from './prayer-time/prayer-times.module';
-import { NotificationSchedulerModule } from './notification-scheduler/notification-scheduler.module';
-import { NotificationModule } from './notification/notification.module';
-import { MosquesModule } from './mosques/mosques.module';
-import { SalatTrackingModule } from './salat-tracking/salat-tracking.module';
+import { Logger, Module } from '@nestjs/common'
+import { CacheModule } from '@nestjs/cache-manager' // ✅ Corrected Import
+import { MongooseModule } from '@nestjs/mongoose'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import * as redisStore from 'cache-manager-redis-store' // ✅ Import Redis store
+import { AuthModule } from './auth/auth.module'
+import { UsersModule } from './users/users.module'
+import { AdminModule } from './admin/admin.module'
+import { PrayersModule } from './prayers/prayers.module'
+import { DonationsModule } from './donations/donations.module'
+import { EventsModule } from './events/events.module'
+import { JamatModule } from './jamats/jamat.module'
+import { PrayerTimesModule } from './prayer-time/prayer-times.module'
+import { NotificationSchedulerModule } from './notification-scheduler/notification-scheduler.module'
+import { NotificationModule } from './notification/notification.module'
+import { MosquesModule } from './mosques/mosques.module'
+import { SalatTrackingModule } from './salat-tracking/salat-tracking.module'
 
 @Module({
   imports: [
@@ -27,16 +27,16 @@ import { SalatTrackingModule } from './salat-tracking/salat-tracking.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const mongoUri = configService.get<string>('MONGO_URI');
-        const jwtSecret = configService.get<string>('JWT_SECRET'); // ✅ Get JWT_SECRET
+        const mongoUri = configService.get<string>('MONGO_URI')
+        const jwtSecret = configService.get<string>('JWT_SECRET') // ✅ Get JWT_SECRET
 
         // ✅ Print JWT_SECRET to confirm it's accessible
-        Logger.log(`✅ JWT_SECRET Loaded: ${jwtSecret}`, 'Config');
+        Logger.log(`✅ JWT_SECRET Loaded: ${jwtSecret}`, 'Config')
 
         return {
           uri: mongoUri,
           dbName: 'muslimnoor',
-        };
+        }
       },
     }),
 

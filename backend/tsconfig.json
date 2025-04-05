@@ -17,8 +17,8 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "useDefineForClassFields": false,  // ✅ Set to false for NestJS compatibility
-    "types": ["node"],  
+    "useDefineForClassFields": false, // ✅ Set to false for NestJS compatibility
+    "types": ["node"],
     "typeRoots": ["./node_modules/@types"],
     "moduleResolution": "node"
   }

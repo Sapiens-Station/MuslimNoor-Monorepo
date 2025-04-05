@@ -6,14 +6,16 @@ interface LoginResponse {
 
 export function useAuth() {
   const login = async (email: string, password: string) => {
+    // eslint-disable-next-line no-useless-catch
     try {
       const { data, error } = await useFetch<LoginResponse>('/auth/login', {
         baseURL: useRuntimeConfig().public.apiBase,
         method: 'POST',
-        body: { email, password }
+        body: { email, password },
       })
 
-      if (error.value) throw new Error(error.value.data.message || 'Invalid credentials')
+      if (error.value)
+        throw new Error(error.value.data.message || 'Invalid credentials')
 
       if (data.value?.token) {
         localStorage.setItem('token', data.value.token)

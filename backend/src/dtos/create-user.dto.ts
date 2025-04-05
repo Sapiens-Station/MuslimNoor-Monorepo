@@ -5,30 +5,30 @@ import {
   IsString,
   MinLength,
   IsMongoId,
-} from 'class-validator';
+} from 'class-validator'
 
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
-  name: string;
+  name: string
 
   @IsNotEmpty()
   @IsEmail()
-  email: string;
+  email: string
 
   @IsNotEmpty()
   @MinLength(6)
-  password: string;
+  password: string
 
   @IsOptional()
   @IsString()
-  fcmToken?: string;
+  fcmToken?: string
 
   @IsOptional()
   @IsMongoId()
-  mosqueId?: string;
+  mosqueId?: string
 
   @IsOptional()
   @IsString()
-  role?: string;
+  role?: string
 }

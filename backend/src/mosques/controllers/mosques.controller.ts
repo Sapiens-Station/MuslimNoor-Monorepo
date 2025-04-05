@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
-import { MosqueService } from '../services/mosque.service';
+import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common'
+import { MosqueService } from '../services/mosque.service'
 
 @Controller('mosques')
 export class MosquesController {
@@ -7,26 +7,26 @@ export class MosquesController {
 
   @Post()
   create(@Body() body: any) {
-    return this.mosqueService.create(body);
+    return this.mosqueService.create(body)
   }
 
   @Get()
   findAll() {
-    return this.mosqueService.findAll();
+    return this.mosqueService.findAll()
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.mosqueService.findById(id);
+    return this.mosqueService.findById(id)
   }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() body: any) {
-    return this.mosqueService.update(id, body);
+    return this.mosqueService.update(id, body)
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.mosqueService.delete(id);
+    return this.mosqueService.delete(id)
   }
 }

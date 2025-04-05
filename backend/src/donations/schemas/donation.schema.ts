@@ -1,46 +1,44 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, HydratedDocument, Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document, HydratedDocument, Types } from 'mongoose'
 
-export type DonationDocument = Donation & Document & { _id: Types.ObjectId };
+export type DonationDocument = Donation & Document & { _id: Types.ObjectId }
 @Schema({ timestamps: true })
 export class Donation extends Document {
   @Prop({ required: true })
-  donorName: string;
+  donorName: string
 
   @Prop()
-  donorEmail?: string;
+  donorEmail?: string
 
   @Prop({ required: true })
-  amount: number;
+  amount: number
 
   @Prop({ required: true })
-  transactionId: string;
+  transactionId: string
 
   @Prop({ required: true })
-  paymentMethod: string; // e.g., PayPal, Bank Transfer
+  paymentMethod: string // e.g., PayPal, Bank Transfer
 
   @Prop()
-  receiptUrl?: string; // URL to a digital receipt
+  receiptUrl?: string // URL to a digital receipt
 
   @Prop()
-  message?: string;
+  message?: string
 
   @Prop({ required: true }) // ✅ Store full timestamp
-  timestamp: Date;
+  timestamp: Date
 
   @Prop({ default: 'general' }) // Can be 'zakat', 'sadaqah', etc.
-  category: string;
+  category: string
 
   @Prop({ default: 'pending' }) // Status: 'pending', 'confirmed'
-  status: string;
+  status: string
 
   @Prop({ default: false })
-  anonymous?: boolean;
+  anonymous?: boolean
 
   @Prop({ default: false })
-  verifiedByAdmin?: boolean;
+  verifiedByAdmin?: boolean
 }
 
-export const DonationSchema = SchemaFactory.createForClass(Donation);
-
-
+export const DonationSchema = SchemaFactory.createForClass(Donation)
