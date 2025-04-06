@@ -3,7 +3,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useEvents } from '@/composables/useEvents'
 import { ref, onMounted } from 'vue'
 import EventForm from '@/components/events/EventForm.vue'
-import type { EventFormInterface } from '~/interfaces/event.interface'
+import type { EventInterface } from '~/interfaces/event.interface'
 
 const route = useRoute()
 const router = useRouter()
@@ -27,7 +27,7 @@ onMounted(async () => {
   }
 })
 
-const handleUpdate = async (formData: EventFormInterface) => {
+const handleUpdate = async (formData: EventInterface) => {
   try {
     await updateEvent(route.params.id as string, formData)
     router.push(`/events/${route.params.id}`)

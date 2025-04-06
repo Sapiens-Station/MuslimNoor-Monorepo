@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useEvents } from '@/composables/useEvents'
+import { useEvents, type Event } from '@/composables/useEvents'
 import EventCard from '@/components/events/EventCard.vue'
-import type { EventInterface } from '~/interfaces/event.interface'
 
-const { fetchEvents, deleteEvent } = useEvents()
+const { fetchEvents } = useEvents()
+const events = ref<Event[]>([])
 const loading = ref(true)
 const error = ref('')
-const events = ref<(EventInterface & { _id: string })[]>([])
 
 onMounted(async () => {
   try {
@@ -20,13 +19,6 @@ onMounted(async () => {
     }
   }
 })
-
-const handleDelete = async (id: string) => {
-  if (confirm('Are you sure you want to delete this event?')) {
-    await deleteEvent(id)
-    events.value = await fetchEvents()
-  }
-}
 </script>
 
 <template>
@@ -48,12 +40,7 @@ const handleDelete = async (id: string) => {
       v-if="events.length"
       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
     >
-      <EventCard
-        v-for="event in events"
-        :key="event._id"
-        :event="event"
-        @delete="handleDelete"
-      />
+      <EventCard v-for="event in events" :key="event._id" :event="event" />
     </div>
     <div v-else-if="!loading" class="text-gray-600">No events found.</div>
   </div>

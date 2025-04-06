@@ -1,28 +1,22 @@
-export interface Event {
-  _id?: string
-  title: string
-  description: string
-  date: string
-  imageUrl?: string
-}
+import type { EventInterface } from "~/interfaces/event.interface"
 
 export function useEvents() {
   const config = useRuntimeConfig()
   const apiBase = config.public.apiBase || '/api'
 
-  const fetchEvents = async () => {
-    const { data, error } = await useFetch<Event[]>(`${apiBase}/events`)
-    if (error.value) throw new Error('Failed to fetch events')
-    return data.value || []
-  }
+const fetchEvents = async () => {
+  const { data, error } = await useFetch<(EventInterface & { _id: string })[]>(`${apiBase}/events`)
+  if (error.value) throw new Error('Failed to fetch events')
+  return data.value || []
+}
 
   const fetchEventById = async (id: string) => {
-    const { data, error } = await useFetch<Event>(`${apiBase}/events/${id}`)
+    const { data, error } = await useFetch<EventInterface>(`${apiBase}/events/${id}`)
     if (error.value) throw new Error('Event not found')
     return data.value
   }
 
-  const createEvent = async (eventData: Event) => {
+  const createEvent = async (eventData: EventInterface) => {
     const { data, error } = await useFetch(`${apiBase}/events`, {
       method: 'POST',
       body: eventData,
@@ -31,7 +25,7 @@ export function useEvents() {
     return data.value
   }
 
-  const updateEvent = async (id: string, eventData: Event) => {
+  const updateEvent = async (id: string, eventData: EventInterface) => {
     const { data, error } = await useFetch(`${apiBase}/events/${id}`, {
       method: 'PUT',
       body: eventData,
