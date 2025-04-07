@@ -1,25 +1,27 @@
 <script setup lang="ts">
+import DonationForm from '@/components/donations/DonationForm.vue'
 import { useRouter } from 'vue-router'
-import { useEvents } from '@/composables/useEvents'
-import EventForm from '@/components/events/EventForm.vue'
-import type { EventInterface } from '~/interfaces/event.interface'
+import { useDonations } from '@/composables/useDonation'
+import type { DonationInterface } from '@/interfaces/donation.interface'
 
-const { createEvent } = useEvents()
+const { createDonation } = useDonations()
 const router = useRouter()
+const error = ref('')
 
-const handleCreate = async (formData: EventInterface) => {
+const handleSubmit = async (form: DonationInterface) => {
   try {
-    await createEvent(formData)
-    router.push('/events')
-  } catch (err) {
-    alert('Failed to create event: ' + (err as Error).message)
+    await createDonation(form)
+    router.push('/donations')
+  } catch (err: unknown) {
+    error.value = err instanceof Error ? err.message : 'Unknown error'
   }
 }
 </script>
 
 <template>
   <div class="p-6 max-w-2xl mx-auto">
-    <h1 class="text-2xl font-bold mb-4">Create New Event</h1>
-    <EventForm :on-submit="handleCreate" submit-label="Create Event" />
+    <h1 class="text-2xl font-bold mb-4">Create Donation</h1>
+    <div v-if="error" class="text-red-500 mb-4">{{ error }}</div>
+    <DonationForm :on-submit="handleSubmit" submit-label="Create Donation" />
   </div>
 </template>
