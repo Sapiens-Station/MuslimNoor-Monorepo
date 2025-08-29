@@ -1,39 +1,13 @@
-// {
-//   "extends": "./.nuxt/tsconfig.json",
-//   "compilerOptions": {
-//     "target": "ES2022",
-//     "module": "ESNext",
-//     "moduleResolution": "Node",
-//     "lib": ["ES2022", "DOM"],
-//     "types": ["node"],
-//     "allowJs": true,
-//     "strict": true,
-//     "forceConsistentCasingInFileNames": true,
-//     "noImplicitReturns": true,
-//     "noImplicitAny": true,
-//     "noFallthroughCasesInSwitch": true,
-//     "esModuleInterop": true,
-//     "resolveJsonModule": true,
-//     "skipLibCheck": true,
-//     "allowSyntheticDefaultImports": true,
-//     "baseUrl": ".",
-//     "paths": {
-//       "~/*": ["./*"],
-//       "@/*": ["./*"]
-//     }
-//   },
-//   "include": ["**/*.ts", "**/*.js", "**/*.vue"],
-//   "exclude": ["node_modules", ".output"]
-// }
-
 {
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "types": ["node"],
+    // "types": ["@types/node"], // Removed - let Nuxt/TS handle it
+    "typeRoots": ["./types"],    // Make sure nuxt-auth.d.ts is in ./types/
     "baseUrl": ".",
-        "paths": {
-          "~/*": ["./*"],
-          "@/*": ["./*"]
-        }
+    "paths": {
+      "~/*": ["./*"],
+      "@/*": ["./*"]
+    }
   }
+  // "include" array removed - Inherited from .nuxt/tsconfig.json
 }
