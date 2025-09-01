@@ -1,0 +1,23 @@
+# Node artifacts
+node_modules
+dist
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Dependency lockfiles (optional but safe to ignore in image build context)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment variables and config
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+
+# OS metadata
+.DS_Store
+Thumbs.db

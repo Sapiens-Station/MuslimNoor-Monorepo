@@ -22,6 +22,8 @@ backend/logs/
 backend/debug.log
 backend/error.log
 backend/package-lock.json
+backend/.env.docker
+backend/.env.local
 
 # Flutter (App)
 flutter-app/.dart_tool/
