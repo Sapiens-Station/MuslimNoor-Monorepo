@@ -1,8 +1,9 @@
 import axios from 'axios'
 
 export default defineNuxtPlugin(() => {
+  const config = useRuntimeConfig()
   const instance = axios.create({
-    baseURL: useRuntimeConfig().public.apiBase,
+    baseURL: config.public.apiBase,
   })
 
   instance.interceptors.request.use(config => {

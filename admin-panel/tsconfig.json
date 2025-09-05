@@ -1,13 +1,4 @@
 {
-  "extends": "./.nuxt/tsconfig.json",
-  "compilerOptions": {
-    // "types": ["@types/node"], // Removed - let Nuxt/TS handle it
-    "typeRoots": ["./types"],    // Make sure nuxt-auth.d.ts is in ./types/
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./*"],
-      "@/*": ["./*"]
-    }
-  }
-  // "include" array removed - Inherited from .nuxt/tsconfig.json
+  // https://nuxt.com/docs/guide/concepts/typescript
+  "extends": "./.nuxt/tsconfig.json"
 }

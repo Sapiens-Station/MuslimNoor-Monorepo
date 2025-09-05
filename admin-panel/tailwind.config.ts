@@ -1,18 +1,15 @@
-import type { Config } from 'tailwindcss'
-
-const config: Config = {
+export default {
   content: [
-    './components/**/*.{vue,js,ts}',
-    './layouts/**/*.vue',
-    './pages/**/*.vue',
-    './app.vue',
-    './plugins/**/*.{js,ts}',
-    './nuxt.config.ts',
+    "./components/**/*.{js,vue,ts}",
+    "./layouts/**/*.vue",
+    "./pages/**/*.vue",
+    "./plugins/**/*.{js,ts}",
+    "./nuxt.config.{js,ts}",
+    "./app.vue",
+    "./tailwind-theme.js",
   ],
+  darkMode: "class", // or 'media' or 'class'
   theme: {
     extend: {},
   },
-  plugins: [],
-}
-
-export default config
+};

@@ -41,7 +41,7 @@ const handleDelete = async (id: string) => {
       </NuxtLink>
     </div>
 
-    <div v-if="loading" class="text-gray-500">Loading events...</div>
+    <!-- <div v-if="loading" class="text-gray-500">Loading events...</div> -->
     <div v-if="error" class="text-red-600">{{ error }}</div>
 
     <div

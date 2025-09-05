@@ -65,6 +65,8 @@
 </template>
 
 <script setup lang="ts">
+
+const { $axios } = useNuxtApp()
 import { onMounted, ref } from 'vue'
 import { useUser } from '~/composables/useUser'
 import type { EventInterface } from '~/interfaces/event.interface'
@@ -76,13 +78,13 @@ const mosques = ref<{ _id: string; name: string }[]>([])
 
 onMounted(async () => {
   try {
-    const { data, error } = await useFetch<{ _id: string; name: string }[]>('/api/mosques')
-    if (error.value) throw new Error(error.value.message)
-    mosques.value = data.value || []
+    const res = await $axios.get('/mosques')
+    mosques.value = res.data
   } catch (err: unknown) {
     console.error('Error loading mosques:', err)
   }
 })
+
 
 const props = defineProps<{
   initialData?: {
@@ -112,4 +114,5 @@ const handleSubmit = async () => {
 
   await props.onSubmit(fullData)
 }
+
 </script>

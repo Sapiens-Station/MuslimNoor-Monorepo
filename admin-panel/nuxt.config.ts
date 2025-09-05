@@ -1,34 +1,83 @@
-import { defineNuxtConfig } from 'nuxt/config'
-
+// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
-  devtools: { enabled: true },
+  app: {
+    pageTransition: { name: "page", mode: "out-in" },
+  },
 
-  modules: [
-    ['@nuxtjs/tailwindcss', {
-      postcss: {
-        config: true, // 👈 Important to force external postcss.config.js
-      }
-    }],
-    '@nuxt/eslint',
-    '@nuxt/icon',
-    '@nuxt/image',
-    '@nuxt/ui',
-  ],
+  css: ["~/assets/css/main.css"],
 
-  css: ['./assets/css/tailwind.css'], // or main.css if you renamed it
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+
+  typescript: {
+    shim: false,
+    strict: true,
+  },
 
   runtimeConfig: {
+    apiSecret: "",
     public: {
-      apiBase: 'http://localhost:3000', // NestJS backend
+      apiBase: 'http://localhost:3000', 
     },
   },
 
-  app: {
-    head: {
-      title: 'Muslim Noor Admin',
-      meta: [{ name: 'viewport', content: 'width=device-width, initial-scale=1' }],
-      link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }],
+  modules: [
+    "@pinia/nuxt",
+    "@pinia-plugin-persistedstate/nuxt",
+    "@vite-pwa/nuxt",
+    "@vueuse/nuxt",
+    "@nuxtjs/tailwindcss",
+  ],
+
+  pwa: {
+    registerType: "autoUpdate",
+    manifest: {
+      name: "Nuxt 3 admin template",
+      short_name: "Nuxt3 Admin",
+      theme_color: "#ffffff",
+      icons: [
+        {
+          src: "pwa-192x192.png",
+          sizes: "192x192",
+          type: "image/png",
+        },
+        {
+          src: "pwa-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+        },
+        {
+          src: "pwa-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "any maskable",
+        },
+      ],
+    },
+    workbox: {
+      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+    },
+    injectManifest: {
+      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+    },
+    client: {
+      installPrompt: true,
+      // you don't need to include this: only for testing purposes
+      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
+      periodicSyncForUpdates: 20,
+    },
+    devOptions: {
+      enabled: true,
+      suppressWarnings: true,
+      navigateFallback: "/",
+      navigateFallbackAllowlist: [/^\/$/],
+      type: "module",
     },
   },
-})
+
+  compatibilityDate: "2025-02-21",
+});

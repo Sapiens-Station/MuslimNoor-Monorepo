@@ -1,7 +1,7 @@
 import { useRuntimeConfig } from '#app'
 
 interface LoginResponse {
-  token: string
+  access_token: string
 }
 
 export function useAuth() {
@@ -17,8 +17,8 @@ export function useAuth() {
       if (error.value)
         throw new Error(error.value.data.message || 'Invalid credentials')
 
-      if (data.value?.token) {
-        localStorage.setItem('token', data.value.token)
+      if (data.value?.access_token) {
+        localStorage.setItem('token', data.value.access_token)
       } else {
         throw new Error('No token received from server')
       }
