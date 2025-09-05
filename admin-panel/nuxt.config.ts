@@ -5,7 +5,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   modules: [
-    '@nuxtjs/tailwindcss',
+    ['@nuxtjs/tailwindcss', {
+      postcss: {
+        config: true, // 👈 Important to force external postcss.config.js
+      }
+    }],
     '@nuxt/eslint',
     '@nuxt/icon',
     '@nuxt/image',

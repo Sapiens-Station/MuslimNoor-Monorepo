@@ -16,9 +16,9 @@ export class RegisterDto {
   @MinLength(6)
   password: string
 
-  // @IsString()
-  // @IsOptional()
-  // role?: string; // Optional: user can register as "admin"
+  @IsString()
+  @IsOptional()
+  role?: string; // Optional: user can register as "admin"
 }
 
 export class LoginDto {

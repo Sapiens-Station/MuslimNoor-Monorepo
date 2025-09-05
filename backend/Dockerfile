@@ -21,27 +21,54 @@
 
 
 
+# # Use official Node.js LTS image
+# FROM node:20
+
+# # Set working directory inside the container
+# WORKDIR /app
+
+# # Install ts-node-dev for live reloading (add Nest CLI if needed)
+# RUN npm install -g ts-node-dev @nestjs/cli
+
+# # Copy package.json first (for cache efficiency)
+# COPY package*.json ./
+
+# # Install dependencies
+# RUN npm install
+
+# # Copy the rest of your application code
+# COPY . .
+
+# # Expose NestJS default port
+# EXPOSE 3000
+
+# # Start with ts-node-dev for hot-reloading
+# CMD ["npm", "run", "start:dev"]
+
+
 # Use official Node.js LTS image
 FROM node:20
 
 # Set working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json first (for efficient caching)
+# Copy only package.json & lock file
 COPY package*.json ./
 
-# Install dependencies before copying source code
+# Install ALL dependencies (including dev)
 RUN npm install
 
-# Install NestJS CLI globally (Fix for "nest: not found")
-RUN npm install -g @nestjs/cli
-
-# Copy the entire backend source code
+# Copy full backend source
 COPY . .
 
-# Expose the port NestJS runs on
+# Install tsconfig-paths to support 'src/*' aliases in development
+RUN npm install tsconfig-paths --save
+
+# Expose NestJS port
 EXPOSE 3000
 
-# Run the NestJS application using Node instead of Nest CLI
-CMD ["node", "dist/main"]
+# Run NestJS in development mode with tsconfig-paths support
+CMD ["node", "-r", "tsconfig-paths/register", "node_modules/.bin/ts-node-dev", "--respawn", "--transpile-only", "src/main.ts"]
+
+
 

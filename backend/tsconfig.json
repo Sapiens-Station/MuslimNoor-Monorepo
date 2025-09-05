@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "Node16",                            // ✅ Must match with moduleResolution
+    "moduleResolution": "Node16",                 // ✅ Modern resolution style
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -17,9 +18,15 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "useDefineForClassFields": false, // ✅ Set to false for NestJS compatibility
+    "useDefineForClassFields": false,
     "types": ["node"],
     "typeRoots": ["./node_modules/@types"],
-    "moduleResolution": "node"
-  }
+    "resolveJsonModule": true
+  },
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  },
+  "exclude": ["node_modules", "dist"],
+  "compileOnSave": false,
+  "ignoreDeprecations": "6.0"
 }
