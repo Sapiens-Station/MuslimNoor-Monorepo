@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import { JamatService } from 'src/jamats/services/jamat.service'
 import { MosqueService } from 'src/mosques/services/mosque.service'
 import { NotificationService } from 'src/notification/notification.service'

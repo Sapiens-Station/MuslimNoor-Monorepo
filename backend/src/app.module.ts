@@ -20,6 +20,8 @@ import { SalatTrackingModule } from './salat-tracking/salat-tracking.module'
   imports: [
     ConfigModule.forRoot({
       isGlobal: true, // Ensures .env variables are available globally
+      envFilePath: '.env.local',
+      
     }),
 
     // ✅ MongoDB Connection

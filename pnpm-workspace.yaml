@@ -1,0 +1,4 @@
+packages:
+  - "backend"
+  - "admin-panel"
+  # - "mobile"   # add when you create the Flutter app
