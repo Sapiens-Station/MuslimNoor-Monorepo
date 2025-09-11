@@ -1,51 +1,54 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+// src/auth/services/auth.service.ts
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+} from '@nestjs/common'
+import { RegisterDto, LoginDto } from '../dto/auth.dto'
+import * as bcrypt from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import * as bcrypt from 'bcryptjs'
 import { User } from '../../users/schemas/user.schema'
-import { LoginDto, RegisterDto } from '../dto/auth.dto'
+import { UserRole } from '../roles.enum'
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<User>,
-    private jwtService: JwtService
+    @InjectModel(User.name) private userModel: Model<User>,
+    private jwt: JwtService
   ) {}
 
-  async register(registerDto: RegisterDto) {
-    const hashedPassword = await bcrypt.hash(registerDto.password, 10)
-    const user = new this.userModel({
-      ...registerDto,
-      password: hashedPassword,
-      role: 'user',
-    })
-    await user.save()
-    return { message: 'User registered successfully' }
-  }
-
-  async login(user: User) {
-    const payload = { sub: user._id, email: user.email, role: user.role }
+  async register(dto: RegisterDto) {
+    const exists = await this.userModel.findOne({ email: dto.email })
+    if (exists) throw new ConflictException('Email already exists')
+    const password = await bcrypt.hash(dto.password, 10)
+    const role = dto.role ?? UserRole.USER
+    const user = await this.userModel.create({ ...dto, password, role })
     return {
-      access_token: this.jwtService.sign(payload),
-      user: { id: user._id.toString(), email: user.email, role: user.role },
+      _id: user._id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
     }
   }
 
-  async validateUser(email: string, password: string): Promise<User | null> {
-    const user = await this.userModel.findOne({ email }).exec()
-    if (!user) {
-      console.log('❌ User not found')
-      return null
+  // Used by LocalAuthGuard -> LocalStrategy.validate()
+  async login(user: any) {
+    const payload = {
+      sub: user._id.toString(),
+      role: user.role,
+      mosqueId: user.mosqueId?.toString(),
     }
+    return { access_token: await this.jwt.signAsync(payload) }
+  }
 
-    console.log(`✅ Found User: ${user.email}, Role: ${user.role}`)
-
-    if (!(await bcrypt.compare(password, user.password))) {
-      console.log('❌ Invalid Password')
-      return null
-    }
-
-    return user
+  // If not using LocalStrategy:
+  async loginWithCredentials(dto: LoginDto) {
+    const user = await this.userModel.findOne({ email: dto.email })
+    if (!user) throw new UnauthorizedException('Invalid credentials')
+    const ok = await bcrypt.compare(dto.password, user.password)
+    if (!ok) throw new UnauthorizedException('Invalid credentials')
+    return this.login(user)
   }
 }

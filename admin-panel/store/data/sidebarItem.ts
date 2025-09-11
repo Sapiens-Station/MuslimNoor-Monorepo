@@ -216,7 +216,7 @@ export default [
       {
         isTitle: false,
         name: "Events",
-        url: "/events/index",
+        url: "/events",
         icon: "chevron-right",
         submenu: [],
       },

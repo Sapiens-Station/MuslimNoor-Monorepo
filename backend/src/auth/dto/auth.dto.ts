@@ -1,30 +1,33 @@
+// src/auth/dto/auth.dto.ts
 import {
   IsEmail,
-  IsNotEmpty,
-  IsOptional,
   IsString,
   MinLength,
+  IsEnum,
+  IsOptional,
 } from 'class-validator'
+import { UserRole } from '../roles.enum'
 
 export class RegisterDto {
-  @IsNotEmpty()
+  @IsString()
   name: string
 
   @IsEmail()
   email: string
 
+  @IsString()
   @MinLength(6)
   password: string
 
-  @IsString()
   @IsOptional()
-  role?: string; // Optional: user can register as "admin"
+  @IsEnum(UserRole)
+  role?: UserRole // server defaults to USER
 }
 
 export class LoginDto {
   @IsEmail()
   email: string
 
-  @IsNotEmpty()
+  @IsString()
   password: string
 }

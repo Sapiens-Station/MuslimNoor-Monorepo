@@ -4,13 +4,10 @@ import {
   Body,
   UseGuards,
   Request,
-  Logger,
   Get
 } from '@nestjs/common'
 import { AuthService } from '../services/auth.service'
 import { LoginDto, RegisterDto } from '../dto/auth.dto'
-import { AuthGuard } from '@nestjs/passport'
-import { LocalAuthGuard } from '../guards/local-auth.guard'
 import { JwtAuthGuard } from '../guards/jwt-auth.guard'
 
 @Controller('auth')
@@ -22,17 +19,15 @@ export class AuthController {
     return this.authService.register(registerDto)
   }
 
-  @UseGuards(LocalAuthGuard)
+
   @Post('login')
-  async login(@Request() req) {
-    Logger.log('Got into Login', req)
-    return this.authService.login(req.user)
+  async login(@Body() dto: LoginDto) {
+    return this.authService.loginWithCredentials(dto)
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMe(@Request() req) {
-    Logger.log('Got into Login', req)
     return req.user
   }
   
