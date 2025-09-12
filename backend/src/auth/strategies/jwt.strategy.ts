@@ -16,11 +16,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     })
   }
 
-  async validate(payload: JwtPayload): Promise<UserDocument> {
-    const user = await this.userModel.findById(payload.sub).lean()
-    if (!user) {
-      throw new UnauthorizedException('Invalid token')
-    }
-    return user
-  }
+async validate(payload: JwtPayload): Promise<any> {
+  const user = await this.userModel.findById(payload.sub).lean();
+  if (!user) throw new UnauthorizedException('Invalid token');
+  // return a sanitized object instead of the entire user
+  return {
+    _id: user._id.toString(),
+    role: user.role,
+    mosqueId: user.mosqueId?.toString(),
+  };
+}
+
 }

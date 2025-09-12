@@ -22,15 +22,14 @@ export class AuthService {
   async register(dto: RegisterDto) {
     const exists = await this.userModel.findOne({ email: dto.email })
     if (exists) throw new ConflictException('Email already exists')
-    const password = await bcrypt.hash(dto.password, 10)
-    const role = dto.role ?? UserRole.USER
-    const user = await this.userModel.create({ ...dto, password, role })
-    return {
-      _id: user._id,
-      email: user.email,
-      role: user.role,
-      name: user.name,
-    }
+    const hashedPassword = await bcrypt.hash(dto.password, 10)
+    const role = dto.role ?? UserRole.USER // default role
+    const user = await this.userModel.create({
+      ...dto,
+      password: hashedPassword,
+      role,
+    })
+    return { id: user._id, email: user.email, role: user.role, name: user.name }
   }
 
   // Used by LocalAuthGuard -> LocalStrategy.validate()
