@@ -10,7 +10,6 @@ debug.log
 error.log
 package.json
 package-lock.json
-README-progress.md
 
 # Node.js (Backend)
 backend/node_modules/
