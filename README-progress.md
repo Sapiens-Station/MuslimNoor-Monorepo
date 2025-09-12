@@ -128,11 +128,11 @@ Frontend runs at: `http://localhost:3001`
 
 | Done | Endpoint         | Method | Purpose               | Access                 |
 | ---- | ---------------- | ------ | --------------------- | ---------------------- |
-| [ ]  | `/jamat/today`   | GET    | Today’s jamat times   | Public                 |
-| [ ]  | `/jamat/ten-days`| GET    | 10-day jamat schedule | user, guest            |
-| [ ]  | `/jamat`         | POST   | Create jamat schedule | mosqueAuthority, admin |
-| [ ]  | `/jamat/:id`     | PUT    | Update jamat schedule | mosqueAuthority, admin |
-| [ ]  | `/jamat/:id`     | DELETE | Delete jamat schedule | mosqueAuthority, admin |
+| [x]  | `/jamat/today`   | GET    | Today’s jamat times   | Public                 |
+| [x]  | `/jamat/ten-days`| GET    | 10-day jamat schedule | user, guest            |
+| [x]  | `/jamat`         | POST   | Create jamat schedule | mosqueAuthority, admin |
+| [x]  | `/jamat/:id`     | PUT    | Update jamat schedule | mosqueAuthority, admin |
+| [x]  | `/jamat/:id`     | DELETE | Delete jamat schedule | mosqueAuthority, admin |
 
 ### 3. Salat Tracking
 
