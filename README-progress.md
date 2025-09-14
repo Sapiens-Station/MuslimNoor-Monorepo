@@ -145,13 +145,14 @@ Frontend runs at: `http://localhost:3001`
 
 ### 4. Events
 
-| Done | Endpoint      | Method | Purpose            | Access                 |
-| ---- | ------------- | ------ | ------------------ | ---------------------- |
-| [ ]  | `/events`     | GET    | List mosque events | Public                 |
-| [ ]  | `/events/:id` | GET    | Get single event   | Public                 |
-| [ ]  | `/events`     | POST   | Create event       | mosqueAuthority, admin |
-| [ ]  | `/events/:id` | PUT    | Edit event         | mosqueAuthority, admin |
-| [ ]  | `/events/:id` | DELETE | Remove event       | mosqueAuthority, admin |
+| Done | Endpoint           | Method | Purpose            | Access                 |
+| ---- | -----------------  | ------ | ------------------ | ---------------------- |
+| [x]  | `/events`          | GET    | List mosque events | Public                 |
+| [x]  | `/events/:id`      | GET    | Get single event   | Public                 |
+| [x]  | `/events/upcoming` | GET    | Get upcoming event | Public                 |
+| [x]  | `/events`          | POST   | Create event       | mosqueAuthority, admin |
+| [x]  | `/events/:id`      | PUT    | Edit event         | mosqueAuthority, admin |
+| [x]  | `/events/:id`      | DELETE | Remove event       | mosqueAuthority, admin |
 
 ### 5. Donations
 
