@@ -126,34 +126,53 @@ Frontend runs at: `http://localhost:3001`
 
 ### 2. Jamat Schedule
 
-| Done | Endpoint         | Method | Purpose               | Access                 |
-| ---- | ---------------- | ------ | --------------------- | ---------------------- |
-| [x]  | `/jamat/today`   | GET    | Today’s jamat times   | Public                 |
-| [x]  | `/jamat/ten-days`| GET    | 10-day jamat schedule | user, guest            |
-| [x]  | `/jamat`         | POST   | Create jamat schedule | mosqueAuthority, admin |
-| [x]  | `/jamat/:id`     | PUT    | Update jamat schedule | mosqueAuthority, admin |
-| [x]  | `/jamat/:id`     | DELETE | Delete jamat schedule | mosqueAuthority, admin |
+| Done | Endpoint                      | Method | Purpose                                  | Access                 |
+| ---- | ----------------------------- | ------ | ---------------------------------------- | ---------------------- |
+| [x]  | `/jamat/today`                | GET    | Today’s jamat times                      | Public                 |
+| [x]  | `/jamat/ten-days`             | GET    | 10-day jamat schedule                    | user, guest            |
+| [x]  | `/jamat`                      | POST   | Create or upsert a jamat schedule        | mosqueAuthority, admin |
+| [x]  | `/jamat/:id/prayer`           | PATCH  | Update a single prayer’s iqama time      | mosqueAuthority, admin |
+| [x]  | `/jamat/auto-fill`            | POST   | Auto-fill jamat times by location        | mosqueAuthority, admin |
+| [x]  | `/jamat/:id`                  | DELETE | Delete an existing jamat schedule        | mosqueAuthority, admin |
 
-### 3. Salat Tracking
 
-| Done | Endpoint         | Method | Purpose                   | Access                 |
-| ---- | ---------------- | ------ | ------------------------- | ---------------------- |
-| [ ]  | `/salat/track`   | POST   | Mark prayer completed     | user                   |
-| [ ]  | `/salat/today`   | GET    | Today’s completion status | user                   |
-| [ ]  | `/salat/history` | GET    | Retrieve prayer logs      | user                   |
-| [ ]  | `/salat/summary` | GET    | Mosque prayer statistics  | mosqueAuthority, admin |
+### 3. Prayer-times
+
+| Done | Endpoint              | Method | Purpose                | Access |
+| ---- | --------------------- | ------ | ---------------------- | ------ |
+| [x]  | `/prayer-times/today` | GET    | Surah or verse content | Public |
+| [x]  | `/prayer-times/fetch` | GET    | Get Qibla coordinates  | Admin, mosqueAuthority |
+
 
 ### 4. Events
 
-| Done | Endpoint      | Method | Purpose            | Access                 |
-| ---- | ------------- | ------ | ------------------ | ---------------------- |
-| [ ]  | `/events`     | GET    | List mosque events | Public                 |
-| [ ]  | `/events/:id` | GET    | Get single event   | Public                 |
-| [ ]  | `/events`     | POST   | Create event       | mosqueAuthority, admin |
-| [ ]  | `/events/:id` | PUT    | Edit event         | mosqueAuthority, admin |
-| [ ]  | `/events/:id` | DELETE | Remove event       | mosqueAuthority, admin |
+| Done | Endpoint           | Method | Purpose            | Access                 |
+| ---- | -----------------  | ------ | ------------------ | ---------------------- |
+| [x]  | `/events`          | GET    | List mosque events | Public                 |
+| [x]  | `/events/:id`      | GET    | Get single event   | Public                 |
+| [x]  | `/events/upcoming` | GET    | Get upcoming event | Public                 |
+| [x]  | `/events`          | POST   | Create event       | mosqueAuthority, admin |
+| [x]  | `/events/:id`      | PUT    | Edit event         | mosqueAuthority, admin |
+| [x]  | `/events/:id`      | DELETE | Remove event       | mosqueAuthority, admin |
 
-### 5. Donations
+
+### 5. Mosque & Admin Management
+
+| Done | Endpoint                        | Method | Purpose                    | Access                 |
+| ---- | ------------------------------- | ------ | -------------------------- | ---------------------- |
+| [x]  | `/mosques`                      | GET    | List mosques               | admin                  |
+| [x]  | `/mosques`                      | POST   | Create new mosque          | admin                  |
+| [x]  | `/mosques/:id`                  | PUT    | Update mosque details      | admin                  |
+| [x]  | `/mosques/:id`                  | DELETE | Delete mosque              | admin                  |
+| [x]  | `/mosques/:id/users`            | GET    | List mosque users          | admin, mosqueAuthority |
+| [x]  | `/mosques/:id/assign-authority` | POST   | Assign authority to a user | admin                  |
+
+---
+
+## 🧩 Next Release
+
+
+### 1. Donations
 
 | Done | Endpoint          | Method | Purpose                        | Access                 |
 | ---- | ----------------- | ------ | ------------------------------ | ---------------------- |
@@ -163,14 +182,26 @@ Frontend runs at: `http://localhost:3001`
 | [ ]  | `/donate`         | POST   | Record manual donation         | mosqueAuthority, admin |
 | [ ]  | `/donate/:id`     | DELETE | Remove donation record         | mosqueAuthority, admin |
 
-### 6. Quran & Qibla
+
+### 2. Salat Tracking
+
+| Done | Endpoint         | Method | Purpose                   | Access                 |
+| ---- | ---------------- | ------ | ------------------------- | ---------------------- |
+| [ ]  | `/salat/track`   | POST   | Mark prayer completed     | user                   |
+| [ ]  | `/salat/today`   | GET    | Today’s completion status | user                   |
+| [ ]  | `/salat/history` | GET    | Retrieve prayer logs      | user                   |
+| [ ]  | `/salat/summary` | GET    | Mosque prayer statistics  | mosqueAuthority, admin |
+
+
+### 3. Quran & Qibla
 
 | Done | Endpoint           | Method | Purpose                | Access |
 | ---- | ------------------ | ------ | ---------------------- | ------ |
 | [ ]  | `/quran/surah/:id` | GET    | Surah or verse content | Public |
 | [ ]  | `/qibla/direction` | GET    | Get Qibla coordinates  | Public |
 
-### 7. Hajj & Umrah Packages
+
+### 4. Hajj & Umrah Packages
 
 | Done | Endpoint                  | Method | Purpose                        | Access                 |
 | ---- | ------------------------- | ------ | ------------------------------ | ---------------------- |
@@ -178,21 +209,17 @@ Frontend runs at: `http://localhost:3001`
 | [ ]  | `/packages/hajj/:id`      | GET    | Single hajj package            | Public                 |
 | [ ]  | `/packages/hajj/favorite` | POST   | Add hajj package to favourites | user                   |
 | [ ]  | `/packages/hajj`          | POST   | Create hajj package            | mosqueAuthority, admin |
-| [ ]  | `/packages/hajj/:id`      | PUT    | Update hajj package            | mosqueAuthority, admin |
+| [ ]  | `/packages/hajj/:id`      | PUT    | Update hajj package            | , admin |
 | [ ]  | `/packages/hajj/:id`      | DELETE | Delete hajj package            | mosqueAuthority, admin |
 
 *(same endpoints apply for `/packages/umrah`)*
 
-### 8. Mosque & Admin Management
 
-| Done | Endpoint                        | Method | Purpose                    | Access                 |
-| ---- | ------------------------------- | ------ | -------------------------- | ---------------------- |
-| [ ]  | `/mosques`                      | GET    | List mosques               | admin                  |
-| [ ]  | `/mosques`                      | POST   | Create new mosque          | admin                  |
-| [ ]  | `/mosques/:id`                  | PUT    | Update mosque details      | admin                  |
-| [ ]  | `/mosques/:id`                  | DELETE | Delete mosque              | admin                  |
-| [ ]  | `/mosques/:id/users`            | GET    | List mosque users          | admin, mosqueAuthority |
-| [ ]  | `/mosques/:id/assign-authority` | POST   | Assign authority to a user | admin                  |
+### 5. Future Enhancements
+
+| Done | Endpoint                  | Method | Purpose                        | Access                 |
+| ---- | ------------------------- | ------ | ------------------------------ | ---------------------- |
+| [ ]  | `/mosques/my`             | GET    | For convenience                | user                   |
 
 ---
 

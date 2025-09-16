@@ -7,7 +7,7 @@ import {
   Get
 } from '@nestjs/common'
 import { AuthService } from '../services/auth.service'
-import { LoginDto, RegisterDto } from '../dto/auth.dto'
+import { LoginDto, RegisterDto } from '../../dtos/auth.dto'
 import { JwtAuthGuard } from '../guards/jwt-auth.guard'
 
 @Controller('auth')

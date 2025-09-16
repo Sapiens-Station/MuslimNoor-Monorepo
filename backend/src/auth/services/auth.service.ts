@@ -4,7 +4,7 @@ import {
   ConflictException,
   UnauthorizedException,
 } from '@nestjs/common'
-import { RegisterDto, LoginDto } from '../dto/auth.dto'
+import { RegisterDto, LoginDto } from '../../dtos/auth.dto'
 import * as bcrypt from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt'
 import { InjectModel } from '@nestjs/mongoose'

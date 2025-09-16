@@ -1,8 +1,20 @@
-import { IsNumber } from 'class-validator'
+// src/prayer-time/dto/fetch-prayer-times.dto.ts
+import { IsNumberString, IsNotEmpty } from 'class-validator';
 
 export class FetchPrayerTimesDto {
-  @IsNumber() lat: number
-  @IsNumber() lon: number
-  @IsNumber() month: number
-  @IsNumber() year: number
+  @IsNumberString()
+  @IsNotEmpty()
+  lat: string;
+
+  @IsNumberString()
+  @IsNotEmpty()
+  lon: string;
+
+  @IsNumberString()
+  @IsNotEmpty()
+  month: string;
+
+  @IsNumberString()
+  @IsNotEmpty()
+  year: string;
 }
