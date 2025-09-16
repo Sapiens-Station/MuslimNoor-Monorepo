@@ -8,7 +8,7 @@ const animationOpenClose = useAnimationOpenClose();
 const router = useRouter();
 
 const logout = () => {
-  router.push("/login");
+  router.push("/auth/login");
 };
 </script>
 <template>

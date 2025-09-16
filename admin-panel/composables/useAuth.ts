@@ -1,31 +1,24 @@
-import { useRuntimeConfig } from '#app'
-
-interface LoginResponse {
-  access_token: string
-}
+import type { LoginDTO, SignupDTO, UserModel } from '~/interfaces/user.interface'
 
 export function useAuth() {
-  const login = async (email: string, password: string) => {
-    // eslint-disable-next-line no-useless-catch
-    try {
-      const { data, error } = await useFetch<LoginResponse>('/auth/login', {
-        baseURL: useRuntimeConfig().public.apiBase,
-        method: 'POST',
-        body: { email, password },
-      })
+  const { $axios } = useNuxtApp()
 
-      if (error.value)
-        throw new Error(error.value.data.message || 'Invalid credentials')
-
-      if (data.value?.access_token) {
-        localStorage.setItem('token', data.value.access_token)
-      } else {
-        throw new Error('No token received from server')
-      }
-    } catch (err) {
-      throw err
-    }
+  const signup = async (payload: SignupDTO): Promise<UserModel> => {
+    const res = await $axios.post('/auth/signup', payload)
+    return res.data as UserModel
   }
 
-  return { login }
+  const login = async (payload: LoginDTO): Promise<{ token: string }> => {
+    const res = await $axios.post('/auth/login', payload)
+    const data = res.data as { token: string }
+    localStorage.setItem('token', data.token)
+    return data
+  }
+
+  const me = async (): Promise<UserModel> => {
+    const res = await $axios.get('/auth/me')
+    return res.data as UserModel
+  }
+
+  return { signup, login, me }
 }

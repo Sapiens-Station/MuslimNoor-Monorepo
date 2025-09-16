@@ -69,7 +69,7 @@ git clone https://github.com/Sapiens-Station/MuslimNoor-Monorepo.git
 cd MuslimNoor-Monorepo
 ```
 
-### 2. Run Backend (NestJS + MongoDB + Redis)
+### 2. Run Backend + admin-panel (NestJS + MongoDB + Redis)
 > Make sure Docker is running.
 
 ```bash
@@ -82,10 +82,18 @@ Starts:
 * `Redis` → port `6379`
 
 ### 3. Run Frontend (Admin Panel)
+
 ```bash
 cd admin-panel
 npm install
 npm run dev
+```
+
+### 4. Run Frontend & Backend service simultaneously locally
+
+```bash
+pnpm dev
+run docker and start mongodb
 ```
 
 Frontend runs at: `http://localhost:3001`
@@ -101,6 +109,7 @@ Frontend runs at: `http://localhost:3001`
 ---
 
 ## 📚 API Endpoints
+
 
 ### 1. Authentication & User Management
 
@@ -166,6 +175,96 @@ Frontend runs at: `http://localhost:3001`
 | [x]  | `/mosques/:id`                  | DELETE | Delete mosque              | admin                  |
 | [x]  | `/mosques/:id/users`            | GET    | List mosque users          | admin, mosqueAuthority |
 | [x]  | `/mosques/:id/assign-authority` | POST   | Assign authority to a user | admin                  |
+
+---
+
+## 🎨 Frontend Features (Screens & Pages)
+
+### 1. Authentication & User
+
+| Done | Module / Page                  | Purpose (UI)                          | APIs to Call                                                                                                          | Access                       | Extra Notes                                           |
+| ---- | ------------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ----------------------------------------------------- |
+| [ ]  | Signup Page                     | Register new users                     | POST `/auth/signup`                                                                                                   | Public                       | Basic form validation, mosque selection dropdown.     |
+| [ ]  | Login Page                      | Authenticate & issue JWT               | POST `/auth/login`                                                                                                    | Public                       | Store token in secure storage.                        |
+| [ ]  | Profile Page                    | Show personal info                     | GET `/auth/me` or GET `/users/profile`                                                                                | user, mosqueAuthority, admin | Use one endpoint consistently.                        |
+| [ ]  | Edit Profile Page               | Update name, password, contact info    | PUT `/users/update`                                                                                                   | user, mosqueAuthority, admin | Validate password length & email format.              |
+| [ ]  | Favorites Page                  | View saved Hajj/Umrah packages & events| GET `/users/favorites`                                                                                                | user, mosqueAuthority, admin | Tabs for Hajj, Umrah, Events.                         |
+| [ ]  | Add to Favorites                | Save packages/events                   | POST `/users/favorites/hajj/:packageId` <br> POST `/users/favorites/umrah/:id` <br> POST `/users/favorites/event/:id` | user, mosqueAuthority, admin | Buttons/icons for quick add/remove.                   |
+| [ ]  | Users Management Dashboard      | Admin controls over users              | GET `/users`, POST `/users`, GET `/users/:id`, PUT `/users/:id`, PATCH `/users/:id/role`, DELETE `/users/:id`         | admin, mosqueAuthority (limited) | Role dropdowns, confirm dialogs for delete.       |
+| [ ]  | FCM Token Setup                 | Manage device tokens                   | PATCH `/users/fcm-token`                                                                                              | user, mosqueAuthority, admin | Needed for push notifications.                        |
+| [ ]  | Notifications Settings Page     | Manage alerts preferences              | PATCH `/users/fcm-token` (toggle states)                                                                              | user, mosqueAuthority, admin | Optional toggles for Adhan, events, announcements.    |
+
+---
+
+### 2. Jamat Schedule
+
+| Done | Module / Page            | Purpose (UI)                  | APIs to Call                                                                                   | Access                 | Extra Notes                           |
+| ---- | ------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------------- |
+| [ ]  | Today’s Jamat Times Page | Show iqama times for today    | GET `/jamat/today`                                                                             | Public                 | Display as timetable with icons.      |
+| [ ]  | 10-Day Schedule Page     | Show extended jamat schedule  | GET `/jamat/ten-days`                                                                          | user, guest            | Calendar/table view.                   |
+| [ ]  | Jamat Admin Dashboard    | Manage prayer schedules       | POST `/jamat`, PATCH `/jamat/:id/prayer`, POST `/jamat/auto-fill`, DELETE `/jamat/:id`         | mosqueAuthority, admin | Inline editing for single prayer.     |
+| [ ]  | Edit Single Prayer Time  | Update iqama time             | PATCH `/jamat/:id/prayer`                                                                      | mosqueAuthority, admin | Small inline edit UI.                  |
+| [ ]  | Auto-fill Jamat Screen   | Auto-generate schedule        | POST `/jamat/auto-fill`                                                                        | mosqueAuthority, admin | Use lat/lon to pull times from API.   |
+| [ ]  | Delete Schedule Action   | Remove mosque schedule        | DELETE `/jamat/:id`                                                                            | mosqueAuthority, admin | Confirmation dialog required.         |
+
+---
+
+### 3. Prayer Times & Qibla
+
+| Done | Module / Page         | Purpose (UI)                | APIs to Call                  | Access | Extra Notes                        |
+| ---- | --------------------- | --------------------------- | ----------------------------- | ------ | ---------------------------------- |
+| [ ]  | Prayer Times Today    | Show daily Salah times      | GET `/prayer-times/today`     | Public | Can also show Surah/verse snippet. |
+| [ ]  | Qibla Finder Page     | Compass to Kaaba            | GET `/prayer-times/fetch`     | Public | Use map/compass integration.       |
+
+---
+
+### 4. Events
+
+| Done | Module / Page         | Purpose (UI)                 | APIs to Call                       | Access                 | Extra Notes                                 |
+| ---- | --------------------- | ---------------------------- | ---------------------------------- | ---------------------- | ------------------------------------------- |
+| [ ]  | Events List Page      | Browse/search mosque events  | GET `/events`                      | Public                 | Search & filter UI.                          |
+| [ ]  | Event Detail Page     | View details of event        | GET `/events/:id`                  | Public                 | Show images, description, date.              |
+| [ ]  | Upcoming Event Page   | Highlight next event         | GET `/events/upcoming`             | Public                 | Banner or “starts soon” section.             |
+| [ ]  | Event Admin Dashboard | Manage mosque events         | POST `/events`, PUT `/events/:id`, DELETE `/events/:id` | mosqueAuthority, admin | Support image upload.                        |
+
+---
+
+### 5. Mosque & Admin
+
+| Done | Module / Page        | Purpose (UI)                  | APIs to Call                                   | Access                 | Extra Notes                     |
+| ---- | -------------------- | ----------------------------- | ---------------------------------------------- | ---------------------- | ------------------------------- |
+| [ ]  | Mosque List Page     | Admin can manage all mosques  | GET `/mosques`                                 | admin                  | Add search/sort by city.        |
+| [ ]  | Mosque Detail Page   | Show/edit mosque details      | PUT `/mosques/:id`, DELETE `/mosques/:id`      | admin                  | Attach jamat/events inside tab. |
+| [ ]  | Assign Authority     | Assign user as authority      | POST `/mosques/:id/assign-authority`           | admin                  | Dropdown + confirm popup.       |
+| [ ]  | Mosque Users Page    | List users of a mosque        | GET `/mosques/:id/users`                       | admin, mosqueAuthority | Filter by roles.                |
+
+---
+
+### 6. Shared / Dashboard
+
+| Done | Module / Page           | Purpose (UI)               | APIs to Call                                      | Access                       | Extra Notes                            |
+| ---- | ----------------------- | -------------------------- | ------------------------------------------------- | ---------------------------- | -------------------------------------- |
+| [ ]  | User Dashboard          | Quick view (prayer, event) | GET `/jamat/today`, GET `/events/upcoming`, GET `/users/favorites` | user, mosqueAuthority, admin | Role-based widgets.                    |
+| [ ]  | Mosque Authority Dashboard | Manage mosque data      | Mix of `/jamat`, `/events`, `/mosques/:id/users`  | mosqueAuthority              | Management-centric.                    |
+| [ ]  | Admin Dashboard         | Stats & controls           | `/users`, `/mosques`, `/donations`                | admin                        | Overview of system.                     |
+| [ ]  | Donations Page          | Stripe/PayPal donations    | (future) POST `/donations`                        | user, mosqueAuthority, admin | Payment integration needed.             |
+| [ ]  | Announcements Page      | Send mosque alerts         | (future) `/announcements`                         | mosqueAuthority, admin       | Push via FCM.                           |
+| [ ]  | Search/Filter Bar       | Search across data         | UI logic only                                     | All                          | Works for events, mosques, users.       |
+| [ ]  | Dark Mode Toggle 🌙     | Theme switcher             | UI logic only                                     | All                          | App-wide toggle.                        |
+
+---
+
+## 🧩 Future Enhancements
+
+- [ ] Forgot Password / Reset Flow  
+- [ ] Prayer Reminder Settings (per Jamat time)  
+- [ ] Widget / Home Section with next prayer prominently  
+- [ ] Event RSVP / Registration system  
+- [ ] Event Notifications (“starts in 1 hour”)  
+- [ ] Mosque Public Profile Page (address, imam, jamat schedule, events)  
+- [ ] Donations Page (Stripe/PayPal integration)  
+- [ ] Announcements Page (integrated with FCM)  
+
 
 ---
 
@@ -258,6 +357,12 @@ STRIPE_SECRET_KEY=...
 - [ ] Flutter app for users
 - [ ] Admin analytics dashboard (salat attendance, donation trends)
 - [ ] Support multiple mosques per user
+- [ ] Forgot Password / Reset Flow (Authentication)  
+- [ ] Prayer Reminder Settings (choose notifications per Jamat time)  
+- [ ] Widget / Home Section showing next prayer time prominently  
+- [ ] Event RSVP / Registration system  
+- [ ] Event Notifications (e.g., “Event starts in 1 hour”)  
+- [ ] Mosque Public Profile Page (address, imam, schedule, events) 
 
 ---
 
