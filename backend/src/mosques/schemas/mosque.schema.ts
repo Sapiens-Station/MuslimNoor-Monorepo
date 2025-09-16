@@ -1,16 +1,16 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Document } from 'mongoose'
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Mosque extends Document {
-  @Prop({ required: true })
-  name: string
+  @Prop({ required: true, unique: true })
+  name: string;
+
+  @Prop({ required: true, unique: true })
+  emailId: string;
 
   @Prop({ required: true })
-  emailId: string
-
-  @Prop({ required: true })
-  contactNumber: string
+  contactNumber: string;
 
   @Prop({
     type: {
@@ -20,9 +20,9 @@ export class Mosque extends Document {
     required: true,
   })
   location: {
-    lat: number
-    lon: number
-  }
+    lat: number;
+    lon: number;
+  };
 }
 
-export const MosqueSchema = SchemaFactory.createForClass(Mosque)
+export const MosqueSchema = SchemaFactory.createForClass(Mosque);
