@@ -48,15 +48,18 @@ const { login } = useAuth()
 
 async function handleLogin() {
   error.value = ''
-  try {
-    await login(email.value, password.value)
-    router.push('/') // redirect after login
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      error.value = err?.message || 'Login failed. Please try again.'
-    } else {
-      error.value = 'An unexpected error occurred.'
-    }
-  }
+  // try {
+  //   await login({
+  //       email: email.value,
+  //       password: password.value,
+  //     })
+  //   router.push('/') // redirect after login
+  // } catch (err: unknown) {
+  //   if (err instanceof Error) {
+  //     error.value = err?.message || 'Login failed. Please try again.'
+  //   } else {
+  //     error.value = 'An unexpected error occurred.'
+  //   }
+  // }
 }
 </script>

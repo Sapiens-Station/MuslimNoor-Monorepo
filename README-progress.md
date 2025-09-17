@@ -169,7 +169,7 @@ Frontend runs at: `http://localhost:3001`
 
 | Done | Endpoint                        | Method | Purpose                    | Access                 |
 | ---- | ------------------------------- | ------ | -------------------------- | ---------------------- |
-| [x]  | `/mosques`                      | GET    | List mosques               | admin                  |
+| [x]  | `/mosques`                      | GET    | List mosques               | Public                  |
 | [x]  | `/mosques`                      | POST   | Create new mosque          | admin                  |
 | [x]  | `/mosques/:id`                  | PUT    | Update mosque details      | admin                  |
 | [x]  | `/mosques/:id`                  | DELETE | Delete mosque              | admin                  |

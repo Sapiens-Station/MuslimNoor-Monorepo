@@ -1,12 +1,7 @@
-export {}
+// types/nuxt.d.ts
+import type { AxiosInstance } from 'axios'
 
 declare module '#app' {
-  interface NuxtApp {
-    $auth: {
-      login: (email: string, password: string) => Promise<void>
-      logout: () => void
-    }
-  }
   interface NuxtApp {
     $axios: AxiosInstance
   }
@@ -15,6 +10,7 @@ declare module '#app' {
 declare module 'vue' {
   interface ComponentCustomProperties {
     $axios: AxiosInstance
-    $auth: NuxtApp['$auth']
   }
 }
+
+export {}

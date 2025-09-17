@@ -1,4 +1,12 @@
 {
-  // https://nuxt.com/docs/guide/concepts/typescript
-  "extends": "./.nuxt/tsconfig.json"
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "types": ["@types/node", "vue", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./*"], // ✅ allow ~/ imports from project root
+      "@/*": ["./*"] // ✅ alternative alias (Nuxt 3 default)
+    }
+  },
+  "include": ["**/*.ts", "**/*.vue", "nuxt.config.ts", "types/**/*.d.ts"]
 }
