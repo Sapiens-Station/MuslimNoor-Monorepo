@@ -23,9 +23,6 @@ export class RegisterDto {
   // User selects mosque during registration
   @IsMongoId()
   mosqueId: string;
-
-  // Always defaults to USER, don’t allow user to set this
-  role: UserRole = UserRole.USER;
 }
 
 export class LoginDto {

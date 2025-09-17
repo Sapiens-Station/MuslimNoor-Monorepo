@@ -43,9 +43,10 @@
             show-toggle
           />
 
-
           <div class="w-full">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Mosque</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Mosque</label
+            >
             <select
               v-model="form.mosqueId"
               class="w-full border border-gray-300 rounded px-3 h-10 focus:ring-[#11B175]"
@@ -59,7 +60,6 @@
               </option>
             </select>
           </div>
-
         </div>
 
         <!-- Error -->
@@ -76,8 +76,6 @@
     </div>
   </AuthLayout>
 </template>
-
-
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
@@ -96,8 +94,6 @@ const form = ref({
   password: '',
   confirmPassword: '',
   mosqueId: '68c9beaf13c2803c84075495', // default ✅
-  role: 'user', // default ✅
-  fcmToken: null, // default ✅
 })
 
 const mosques = ref<MosqueModel[]>([])
@@ -106,13 +102,11 @@ const loading = ref(false)
 
 const router = useRouter()
 const { signup } = useAuth()
-const { fetchMosques } = useMosques()  // ✅ proper composable
+const { fetchMosques } = useMosques() // ✅ proper composable
 
 onMounted(async () => {
-  console.log('Fetching mosques...')
   try {
-    mosques.value = await fetchMosques()   // ✅ CALL it
-    console.log('Mosques loaded:', mosques.value)
+    mosques.value = await fetchMosques() // ✅ CALL it
   } catch (e) {
     console.error('❌ Failed to load mosques', e)
   }
@@ -128,7 +122,13 @@ async function handleSignup() {
 
   loading.value = true
   try {
-    await signup(form.value) // ✅ sends full payload
+    const submitForm = ref({
+      name: form.value.name,
+      email: form.value.email,
+      password: form.value.password,
+      mosqueId: form.value.mosqueId, // default ✅
+    })
+    await signup(submitForm.value) // ✅ sends full payload
     router.push('/auth/login')
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -141,4 +141,3 @@ async function handleSignup() {
   }
 }
 </script>
-

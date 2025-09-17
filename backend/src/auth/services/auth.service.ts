@@ -23,7 +23,7 @@ export class AuthService {
     const exists = await this.userModel.findOne({ email: dto.email })
     if (exists) throw new ConflictException('Email already exists')
     const hashedPassword = await bcrypt.hash(dto.password, 10)
-    const role = dto.role ?? UserRole.USER // default role
+    const role = UserRole.USER // default role
     const user = await this.userModel.create({
       ...dto,
       password: hashedPassword,
