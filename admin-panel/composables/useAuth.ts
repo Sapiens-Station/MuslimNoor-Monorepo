@@ -4,7 +4,7 @@ export function useAuth() {
   const { $axios } = useNuxtApp()
 
   const signup = async (payload: SignupDTO): Promise<UserModel> => {
-    const res = await $axios.post('/auth/signup', payload)
+    const res = await $axios.post('/auth/register', payload)
     return res.data as UserModel
   }
 

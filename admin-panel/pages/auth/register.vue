@@ -42,11 +42,10 @@
             icon="lock"
             show-toggle
           />
-          <!-- Mosque dropdown -->
-          <!-- <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Mosque</label
-            >
+
+
+          <div class="w-full">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Mosque</label>
             <select
               v-model="form.mosqueId"
               class="w-full border border-gray-300 rounded px-3 h-10 focus:ring-[#11B175]"
@@ -59,7 +58,8 @@
                 {{ mosque.name }}
               </option>
             </select>
-          </div> -->
+          </div>
+
         </div>
 
         <!-- Error -->
@@ -69,31 +69,26 @@
 
         <!-- Submit Button -->
         <AuthButton :disabled="loading" @click="handleSignup">
-          <span v-if="loading">Signing up...</span>
+          <span v-if="loading">Signing in...</span>
           <span v-else>Sign Up</span>
         </AuthButton>
-
-        <!-- Already have an account -->
-        <!-- <p class="text-sm text-gray-600 mt-6">
-          Already have an account?
-          <NuxtLink
-            to="/auth/login"
-            class="text-[#11B175] font-medium hover:underline"
-          >
-            Sign In
-          </NuxtLink>
-        </p> -->
       </div>
     </div>
   </AuthLayout>
 </template>
 
+
+
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '~/composables/useAuth'
-// import { useMosques } from '~/composables/useMosques'
-// import type { MosqueModel } from '~/interfaces/mosque.interface'
+import { useMosques } from '~/composables/useMosques'
+import type { MosqueModel } from '~/interfaces/mosque.interface'
+
+import AuthLayout from '~/layouts/auth.vue'
+import AuthInput from '~/components/auth/AuthInput.vue'
+import AuthButton from '~/components/auth/AuthButton.vue'
 
 const form = ref({
   name: '',
@@ -105,21 +100,23 @@ const form = ref({
   fcmToken: null, // default ✅
 })
 
-// const mosques = ref<MosqueModel[]>([])
+const mosques = ref<MosqueModel[]>([])
 const error = ref('')
 const loading = ref(false)
 
 const router = useRouter()
-const { signup } = useAuth()   // auto-imported
-// const { fetchMosques } = useMosques() // auto-imported
+const { signup } = useAuth()
+const { fetchMosques } = useMosques()  // ✅ proper composable
 
-// onMounted(async () => {
-//   try {
-//     mosques.value = await fetchMosques()
-//   } catch (e) {
-//     console.error('❌ Failed to load mosques', e)
-//   }
-// })
+onMounted(async () => {
+  console.log('Fetching mosques...')
+  try {
+    mosques.value = await fetchMosques()   // ✅ CALL it
+    console.log('Mosques loaded:', mosques.value)
+  } catch (e) {
+    console.error('❌ Failed to load mosques', e)
+  }
+})
 
 async function handleSignup() {
   error.value = ''
@@ -144,3 +141,4 @@ async function handleSignup() {
   }
 }
 </script>
+

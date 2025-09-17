@@ -158,14 +158,14 @@ export default [
       {
         isTitle: false,
         name: "Login",
-        url: "/login",
+        url: "/auth/login",
         icon: "chevron-right",
         submenu: [],
       },
       {
         isTitle: false,
         name: "Register",
-        url: "/register",
+        url: "/auth/register",
         icon: "chevron-right",
         submenu: [],
       },

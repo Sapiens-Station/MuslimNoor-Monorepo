@@ -1,4 +1,5 @@
-import type { AuthUser } from '~/interfaces/user.interface'
+import { useFetch, useRuntimeConfig, useState } from 'nuxt/app'
+import type { AuthUser } from '~/interfaces/user.interface.ts'
 
 export const useUser = () => {
   const user = useState<AuthUser | null>('user', () => null)

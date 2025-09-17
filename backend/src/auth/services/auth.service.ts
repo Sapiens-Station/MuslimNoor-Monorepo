@@ -29,7 +29,7 @@ export class AuthService {
       password: hashedPassword,
       role,
     })
-    return { id: user._id, email: user.email, role: user.role, name: user.name }
+    return { id: user._id, email: user.email, role: user.role, name: user.name, mosqueId: user.mosqueId}
   }
 
   // Used by LocalAuthGuard -> LocalStrategy.validate()
