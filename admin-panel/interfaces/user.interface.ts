@@ -11,13 +11,6 @@ export interface LoginDTO {
   password: string
 }
 
-export interface UserUpdateDTO {
-  name?: string
-  email?: string
-  password?: string
-  contact?: string
-}
-
 // Model returned from backend
 export interface UserModel {
   _id: string
@@ -25,6 +18,17 @@ export interface UserModel {
   email: string
   role: 'user' | 'mosqueAuthority' | 'admin'
   mosqueId?: string
+  contactNumber?: string | null
+  fcmToken?: string | null
   createdAt?: string
   updatedAt?: string
+}
+
+export interface UserUpdateDTO {
+  name?: string
+  email?: string
+  password?: string
+  contactNumber?: string
+  mosqueId?: string | null
+  fcmToken?: string | null
 }

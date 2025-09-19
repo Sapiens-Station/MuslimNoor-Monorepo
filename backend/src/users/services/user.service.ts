@@ -8,6 +8,7 @@ import { Model, Types } from 'mongoose'
 import { User, UserRole, UserDocument } from '../schemas/user.schema'
 import { UpdateUserDto } from 'src/dtos/update-user.dto'
 import * as bcrypt from 'bcryptjs'
+import { UserResponseDto } from '~/dtos/user.response.dto'
 
 @Injectable()
 export class UserService {
@@ -18,12 +19,13 @@ export class UserService {
     return this.userModel.find().select('-password').exec()
   }
 
-  async findById(id: string): Promise<User> {
+  async findById(id: string): Promise<UserResponseDto> {
     const user = await this.userModel
       .findById(new Types.ObjectId(id))
       .select('-password')
+      .populate('mosqueId');
     if (!user) throw new NotFoundException('User not found')
-    return user
+    return user.toObject();
   }
 
   // List users by mosque (for mosqueAuthority and admin)

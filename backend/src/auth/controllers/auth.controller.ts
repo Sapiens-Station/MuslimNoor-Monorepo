@@ -25,10 +25,4 @@ export class AuthController {
     return this.authService.loginWithCredentials(dto)
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('me')
-  async getMe(@Request() req) {
-    return req.user
-  }
-  
 }
