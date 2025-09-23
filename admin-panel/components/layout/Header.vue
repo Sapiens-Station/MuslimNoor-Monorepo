@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { TwButton, TwDropdownMenu, TwFeather } from "vue3-tailwind";
-import { useSidebarStore } from "~~/store/sidebar";
+import { useSidebarStore } from "~~/stores/sidebar";
 
 const sidebarStore = useSidebarStore();
 const animationOpenClose = useAnimationOpenClose();

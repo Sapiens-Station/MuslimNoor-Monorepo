@@ -1,6 +1,12 @@
 // src/jamats/schemas/jamat.schema.ts
+
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+
+export enum JamatStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+}
 
 export type PrayerName =
   | 'Fajr'
@@ -18,6 +24,10 @@ export class Jamat extends Document {
   @Prop({ type: Date, required: true })
   date: Date;
 
+  // optional dayKey if using
+  @Prop({ type: String })
+  dayKey?: string;
+
   @Prop({
     type: [
       {
@@ -30,6 +40,7 @@ export class Jamat extends Document {
         azanTime: { type: String },
       },
     ],
+    default: [],
   })
   jamatTimes: {
     prayerName: PrayerName;
@@ -39,6 +50,9 @@ export class Jamat extends Document {
 
   @Prop({ type: Types.ObjectId, ref: 'User' })
   createdBy?: Types.ObjectId;
+
+  @Prop({ type: String, enum: Object.values(JamatStatus), default: JamatStatus.PENDING })
+  status: JamatStatus;
 }
 
 export type JamatDocument = Jamat & Document;

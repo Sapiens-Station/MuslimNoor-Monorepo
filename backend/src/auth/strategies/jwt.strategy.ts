@@ -1,30 +1,32 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+// src/auth/strategies/jwt.strategy.ts
+import { Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { ExtractJwt, Strategy } from 'passport-jwt'
-import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
-import { JwtPayload } from '../interfaces/jwt-payload.interface'
-import { User, UserDocument } from 'src/users/schemas/user.schema'
+import { Request } from 'express'
+import { ConfigService } from '@nestjs/config'
+
+type JwtPayload = { sub: string; role: string; mosqueId?: string }
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
+  constructor(private readonly configService: ConfigService) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req: Request) => (req?.cookies?.['accessToken'] ? req.cookies['accessToken'] : null),
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET,
+      secretOrKey: configService.get<string>('JWT_SECRET'),
     })
   }
 
-async validate(payload: JwtPayload): Promise<any> {
-  const user = await this.userModel.findById(payload.sub).lean();
-  if (!user) throw new UnauthorizedException('Invalid token');
-  // return a sanitized object instead of the entire user
-  return {
-    _id: user._id.toString(),
-    role: user.role,
-    mosqueId: user.mosqueId?.toString(),
-  };
-}
-
+  async validate(payload: JwtPayload) {
+    // If you want to ensure the user still exists, do a DB lookup here.
+    // Otherwise, trust payload:
+    return {
+      _id: payload.sub,
+      role: payload.role,
+      mosqueId: payload.mosqueId,
+    }
+  }
 }

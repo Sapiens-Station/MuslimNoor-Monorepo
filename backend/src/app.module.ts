@@ -55,8 +55,8 @@ import { SalatTrackingModule } from './salat-tracking/salat-tracking.module'
     }),
 
     // ✅ Application Modules
-    AuthModule,
     UsersModule,
+    AuthModule,
     AdminModule,
     EventsModule,
     DonationsModule,

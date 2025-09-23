@@ -29,7 +29,7 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, onMounted, watch } from 'vue'
+  import { ref, onMounted, watch, computed } from 'vue'
   import feather from 'feather-icons'
   
   /** Props */

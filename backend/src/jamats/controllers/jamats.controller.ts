@@ -11,105 +11,99 @@ import {
   Query,
   UseGuards,
   Req,
-} from '@nestjs/common';
-import { JamatService } from '../services/jamat.service';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { UserRole } from 'src/users/schemas/user.schema';
-import { PrayerName } from '../schemas/jamat.schema';
+} from '@nestjs/common'
+import { JamatService } from '../services/jamat.service'
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import { RolesGuard } from 'src/auth/guards/roles.guard'
+import { Roles } from 'src/auth/decorators/roles.decorator'
+import { UserRole } from 'src/users/schemas/user.schema'
+import { PrayerName } from '../schemas/jamat.schema'
+import { UpsertJamatDto, UpdatePrayerDto, AutoFillDto } from '~/dtos/jamat.dto'
+import { AutoFillJamatDto } from '~/dtos/auto-fill-jamat.dto'
 
 @Controller('jamat')
 export class JamatController {
   constructor(private readonly jamatService: JamatService) {}
 
-  // ✅ Purpose: Get jamat schedule for a specific date and mosque (public)
   @Get('today')
-  getToday(
-    @Query('mosqueId') mosqueId: string,
-    @Query('date') date: string,
-  ) {
-    return this.jamatService.getSchedule(mosqueId, date);
+  getToday(@Query('mosqueId') mosqueId: string, @Query('date') date: string) {
+    return this.jamatService.getSchedule(mosqueId, date)
   }
 
-  // ✅ Purpose: Get jamat schedules for the next 10 days (public)
   @Get('ten-days')
   getTenDays(
     @Query('mosqueId') mosqueId: string,
-    @Query('from') from?: string,
+    @Query('from') from?: string
   ) {
-    return this.jamatService.getTenDays(mosqueId, from);
+    return this.jamatService.getTenDays(mosqueId, from)
   }
 
-  // ✅ Purpose: Create or upsert jamat schedule for a day
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.MOSQUE_AUTHORITY, UserRole.ADMIN)
   @Post()
-  create(
-    @Body() body: {
-      mosqueId: string;
-      date: string;
-      jamatTimes: { prayerName: PrayerName; iqamaTime: string; azanTime?: string }[];
-    },
-    @Req() req: any,
-  ) {
-    return this.jamatService.createSchedule(body, req.user);
+  create(@Body() body: UpsertJamatDto, @Req() req: any) {
+    return this.jamatService.createSchedule(body, {
+      _id: req.user._id,
+      role: req.user.role,
+      mosqueId: req.user.mosqueId,
+    })
   }
 
-  // ✅ Purpose: Update an entire jamat schedule by ID
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.MOSQUE_AUTHORITY, UserRole.ADMIN)
   @Put(':id')
   update(
     @Param('id') id: string,
-    @Body() body: {
-      mosqueId: string;
-      date: string;
-      jamatTimes: { prayerName: PrayerName; iqamaTime: string; azanTime?: string }[];
-    },
-    @Req() req: any,
+    @Body() body: UpsertJamatDto,
+    @Req() req: any
   ) {
-    return this.jamatService.updateSchedule(id, body, req.user);
+    return this.jamatService.updateSchedule(id, body, {
+      _id: req.user._id,
+      role: req.user.role,
+      mosqueId: req.user.mosqueId,
+    })
   }
 
-  // ✅ Purpose: Update a single prayer’s iqama time within a schedule
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.MOSQUE_AUTHORITY, UserRole.ADMIN)
   @Patch(':id/prayer')
   updatePrayer(
     @Param('id') id: string,
-    @Body() body: { prayerName: PrayerName; iqamaTime: string },
-    @Req() req: any,
+    @Body() body: UpdatePrayerDto,
+    @Req() req: any
   ) {
     return this.jamatService.updatePrayerTime(
       id,
-      body.prayerName,
+      body.prayerName as PrayerName,
       body.iqamaTime,
-      req.user,
-    );
+      {
+        _id: req.user._id,
+        role: req.user.role,
+        mosqueId: req.user.mosqueId,
+      }
+    )
   }
 
   // ✅ Purpose: Auto-fill jamat times based on location (lat/lon)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.MOSQUE_AUTHORITY, UserRole.ADMIN)
-  @Post('auto-fill')
-  autoFill(
-    @Body() body: {
-      mosqueId: string;
-      lat: number;
-      lon: number;
-      date: string;
-    },
-    @Req() req: any,
-  ) {
-    return this.jamatService.autoFillSchedule(body, req.user);
+  @Patch(':id/approve')
+  approve(@Param('id') id: string, @Req() req: any) {
+    return this.jamatService.approveSchedule(id, {
+      role: req.user.role,
+      mosqueId: req.user.mosqueId,
+      _id: req.user._id,
+    })
   }
 
-  // ✅ Purpose: Delete a jamat schedule entry
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.MOSQUE_AUTHORITY, UserRole.ADMIN)
-  @Delete(':id')
-  delete(@Param('id') id: string, @Req() req: any) {
-    return this.jamatService.deleteSchedule(id, req.user);
+  @Post('auto-fill')
+  autoFill(@Body() body: AutoFillJamatDto, @Req() req: any) {
+    return this.jamatService.autoFillSchedule(body, {
+      role: req.user.role,
+      mosqueId: req.user.mosqueId,
+      _id: req.user._id,
+    })
   }
 }

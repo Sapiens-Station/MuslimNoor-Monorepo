@@ -4,7 +4,7 @@ export class UserResponseDto {
   _id: string;
   name: string;
   email: string;
-  mosqueId: Mosque; // instead of string
+  mosqueId?: string | Mosque// instead of string
   fcmTokens: string[];
   role: string;
   favoriteHajjPackages: string[];

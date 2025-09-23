@@ -3,11 +3,9 @@ import {
   IsEmail,
   IsString,
   MinLength,
-  IsEnum,
-  IsOptional,
   IsMongoId,
+  IsOptional,
 } from 'class-validator'
-import { UserRole } from '../auth/roles.enum'
 
 export class RegisterDto {
   @IsString()
@@ -21,6 +19,7 @@ export class RegisterDto {
   password: string;
 
   // User selects mosque during registration
+  @IsOptional()
   @IsMongoId()
   mosqueId: string;
 }
