@@ -32,11 +32,11 @@ export function useAuth() {
       password: payload.password,
     })
 
-    const { user, accessToken, refreshToken } = response.data
+    const { user, accessToken } = response.data
 
     // Store tokens in localStorage (or Pinia/secure storage)
     localStorage.setItem('token', accessToken)
-    localStorage.setItem('refreshToken', refreshToken)
+    // localStorage.setItem('refreshToken', refreshToken)
 
     const auth = useAuthStore()
     auth.setUser(user)

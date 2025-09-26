@@ -15,7 +15,9 @@ import { CreateUserDto } from '~/dtos/create-user.dto'
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument | null>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument | null>
+  ) {}
 
   async findAll(): Promise<User[]> {
     try {
@@ -68,14 +70,21 @@ export class UserService {
     }
   }
 
-  async update(id: string, dto: UpdateUserDto): Promise<User> {
+  async update(id: string, dto: UpdateUserDto): Promise<UserDocument> {
     try {
+      const updateData: Partial<UpdateUserDto> = { ...dto }
+
       if (dto.password) {
-        dto.password = await bcrypt.hash(dto.password, 10)
+        updateData.password = await bcrypt.hash(dto.password, 10)
+      } else {
+        // ❌ Prevent overwriting password with null/undefined
+        delete updateData.password
       }
+
       const updated = await this.userModel
-        .findByIdAndUpdate(id, dto, { new: true })
+        .findByIdAndUpdate(id, updateData, { new: true })
         .select('-password')
+
       if (!updated) throw new NotFoundException('User not found')
       return updated
     } catch (err) {
@@ -83,13 +92,10 @@ export class UserService {
     }
   }
 
-  async createUser(dto: CreateUserDto
-  ): Promise<UserDocument | null> {
+  async createUser(dto: CreateUserDto): Promise<UserDocument | null> {
     try {
       // Check if email already exists
-      const existing = await this.userModel
-        .findOne({ email: dto.email })
-        .exec()
+      const existing = await this.userModel.findOne({ email: dto.email }).exec()
       if (existing) {
         throw new ConflictException('User with this email already exists')
       }
@@ -134,7 +140,10 @@ export class UserService {
     }
   }
 
-  async updateRole(userId: string, role: UserRole): Promise<UserDocument | null> {
+  async updateRole(
+    userId: string,
+    role: UserRole
+  ): Promise<UserDocument | null> {
     try {
       const updated = await this.userModel
         .findByIdAndUpdate(userId, { role }, { new: true })
@@ -155,7 +164,10 @@ export class UserService {
     }
   }
 
-  async addFcmToken(userId: string, token: string): Promise<UserDocument | null> {
+  async addFcmToken(
+    userId: string,
+    token: string
+  ): Promise<UserDocument | null> {
     try {
       const updated = await this.userModel
         .findByIdAndUpdate(
@@ -188,7 +200,10 @@ export class UserService {
     }
   }
 
-  async addFavoriteHajj(userId: string, packageId: string): Promise<UserDocument | null> {
+  async addFavoriteHajj(
+    userId: string,
+    packageId: string
+  ): Promise<UserDocument | null> {
     try {
       return await this.userModel
         .findByIdAndUpdate(
@@ -204,7 +219,10 @@ export class UserService {
     }
   }
 
-  async addFavoriteUmrah(userId: string, packageId: string): Promise<UserDocument | null> {
+  async addFavoriteUmrah(
+    userId: string,
+    packageId: string
+  ): Promise<UserDocument | null> {
     try {
       return await this.userModel
         .findByIdAndUpdate(
@@ -220,7 +238,10 @@ export class UserService {
     }
   }
 
-  async addFavoriteEvent(userId: string, eventId: string): Promise<UserDocument | null> {
+  async addFavoriteEvent(
+    userId: string,
+    eventId: string
+  ): Promise<UserDocument | null> {
     try {
       return await this.userModel
         .findByIdAndUpdate(
@@ -260,24 +281,24 @@ export class UserService {
   }
 
   // 🔐 Refresh token helpers
-  async setRefreshToken(
-    userId: string,
-    refreshTokenHash: string
-  ): Promise<void> {
-    await this.userModel.findByIdAndUpdate(userId, { refreshTokenHash }).exec()
-  }
+  // async setRefreshToken(
+  //   userId: string,
+  //   refreshTokenHash: string
+  // ): Promise<void> {
+  //   await this.userModel.findByIdAndUpdate(userId, { refreshTokenHash }).exec()
+  // }
 
-  async removeRefreshToken(userId: string): Promise<void> {
-    await this.userModel
-      .findByIdAndUpdate(userId, { $unset: { refreshTokenHash: 1 } })
-      .exec()
-  }
+  // async removeRefreshToken(userId: string): Promise<void> {
+  //   await this.userModel
+  //     .findByIdAndUpdate(userId, { $unset: { refreshTokenHash: 1 } })
+  //     .exec()
+  // }
 
-  async getRefreshTokenHash(userId: string): Promise<string | undefined> {
-    const doc = await this.userModel
-      .findById(userId)
-      .select('refreshTokenHash')
-      .lean()
-    return doc?.refreshTokenHash
-  }
+  // async getRefreshTokenHash(userId: string): Promise<string | undefined> {
+  //   const doc = await this.userModel
+  //     .findById(userId)
+  //     .select('refreshTokenHash')
+  //     .lean()
+  //   return doc?.refreshTokenHash
+  // }
 }

@@ -53,14 +53,14 @@ export class AuthService {
       })
 
       // ✅ Refresh token (long, different secret)
-      const refreshToken = this.jwtService.sign(payload, {
-        secret: process.env.JWT_REFRESH_SECRET,
-        expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
-      })
+      // const refreshToken = this.jwtService.sign(payload, {
+      //   secret: process.env.JWT_REFRESH_SECRET,
+      //   expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
+      // })
 
       // ✅ Store refreshToken hash in DB
-      const hashedRt = await bcrypt.hash(refreshToken, 10)
-      await this.userService.setRefreshToken(user._id.toString(), hashedRt)
+      // const hashedRt = await bcrypt.hash(refreshToken, 10)
+      // await this.userService.setRefreshToken(user._id.toString(), hashedRt)
 
       const safeUser = {
         _id: user._id,
@@ -70,7 +70,7 @@ export class AuthService {
         mosqueId: user.mosqueId,
       }
 
-      return { user: safeUser, accessToken, refreshToken }
+      return { user: safeUser, accessToken }
     } catch (err) {
       if (err instanceof UnauthorizedException) throw err
       console.error('[AuthService] Error in login:', err)
@@ -79,54 +79,55 @@ export class AuthService {
   }
 
   // 🔄 Refresh tokens: verify, rotate, return new pair
-  async refreshTokens(rawToken: string) {
-    let decoded: JwtPayload
-    try {
-      decoded = await this.jwtService.verifyAsync<JwtPayload>(rawToken, {
-        secret: process.env.JWT_REFRESH_SECRET!,
-      })
-    } catch {
-      throw new ForbiddenException('Invalid refresh token')
-    }
+  // async refreshTokens(rawToken: string) {
+  //   let decoded: JwtPayload
+  //   try {
+  //     decoded = await this.jwtService.verifyAsync<JwtPayload>(rawToken, {
+  //       secret: process.env.JWT_REFRESH_SECRET!,
+  //     })
+  //   } catch {
+  //     throw new ForbiddenException('Invalid refresh token')
+  //   }
 
-    const storedHash = await this.userService.getRefreshTokenHash(decoded.sub)
-    if (!storedHash) throw new ForbiddenException('No refresh token on record')
+  //   const storedHash = await this.userService.getRefreshTokenHash(decoded.sub)
+  //   if (!storedHash) throw new ForbiddenException('No refresh token on record')
 
-    const matches = await bcrypt.compare(rawToken, storedHash)
-    if (!matches) throw new ForbiddenException('Refresh token mismatch')
+  //   const matches = await bcrypt.compare(rawToken, storedHash)
+  //   if (!matches) throw new ForbiddenException('Refresh token mismatch')
 
-    const payload: JwtPayload = {
-      sub: decoded.sub,
-      role: decoded.role,
-      mosqueId: decoded.mosqueId,
-    }
+  //   const payload: JwtPayload = {
+  //     sub: decoded.sub,
+  //     role: decoded.role,
+  //     mosqueId: decoded.mosqueId,
+  //   }
 
-    const accessToken = await this.signAccessToken(payload)
-    const refreshToken = await this.signRefreshToken(payload)
+  //   const accessToken = await this.signAccessToken(payload)
+  //   const refreshToken = await this.signRefreshToken(payload)
 
-    await this.userService.setRefreshToken(
-      decoded.sub,
-      await bcrypt.hash(refreshToken, 10)
-    )
+  //   await this.userService.setRefreshToken(
+  //     decoded.sub,
+  //     await bcrypt.hash(refreshToken, 10)
+  //   )
 
-    return { accessToken, refreshToken }
-  }
+  //   return { accessToken, refreshToken }
+  // }
 
   async logout(userId: string): Promise<void> {
-    await this.userService.removeRefreshToken(userId)
+    // await this.userService.removeRefreshToken(userId)
+    return;
   }
 
-  private async signAccessToken(payload: JwtPayload): Promise<string> {
-    return this.jwtService.signAsync(payload, {
-      secret: process.env.JWT_SECRET!,
-      expiresIn: process.env.JWT_EXPIRES_IN || '15m',
-    })
-  }
+  // private async signAccessToken(payload: JwtPayload): Promise<string> {
+  //   return this.jwtService.signAsync(payload, {
+  //     secret: process.env.JWT_SECRET!,
+  //     expiresIn: process.env.JWT_EXPIRES_IN || '15m',
+  //   })
+  // }
 
-  private async signRefreshToken(payload: JwtPayload): Promise<string> {
-    return this.jwtService.signAsync(payload, {
-      secret: process.env.JWT_REFRESH_SECRET!,
-      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
-    })
-  }
+  // private async signRefreshToken(payload: JwtPayload): Promise<string> {
+  //   return this.jwtService.signAsync(payload, {
+  //     secret: process.env.JWT_REFRESH_SECRET!,
+  //     expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
+  //   })
+  // }
 }

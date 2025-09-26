@@ -29,13 +29,13 @@ export class AuthController {
     return this.authService.validateUserAndGetTokens(loginDto)
   }
 
-  @Post('refresh')
-  async refresh(@Body('refreshToken') refreshToken: string) {
-    if (!refreshToken) {
-      throw new UnauthorizedException('Missing refresh token')
-    }
-    return this.authService.refreshTokens(refreshToken)
-  }
+  // @Post('refresh')
+  // async refresh(@Body('refreshToken') refreshToken: string) {
+  //   if (!refreshToken) {
+  //     throw new UnauthorizedException('Missing refresh token')
+  //   }
+  //   return this.authService.refreshTokens(refreshToken)
+  // }
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')

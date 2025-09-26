@@ -18,8 +18,8 @@ export class User {
   @Prop({ required: true })
   password: string
 
-  @Prop({ required: false })
-  refreshTokenHash?: string
+  // @Prop({ required: false })
+  // refreshTokenHash?: string
 
   @Prop({ required: false })
   contactNumber?: string
