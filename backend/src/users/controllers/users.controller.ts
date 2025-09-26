@@ -33,7 +33,8 @@ export class UsersController {
   // 🔧 Purpose: Allow a user to update their own profile (name, contactNumber, etc.)
   @UseGuards(JwtAuthGuard)
   @Put('update')
-  updateSelf(@Req() req: any, @Body() dto: UpdateUserDto) {
+  updateSelf(@Req() req: any, @Body() dto: any) {
+    console.log('Updating user with ID:', req.user._id, 'with data:', dto)
     return this.userService.update(req.user._id, dto)
   }
 

@@ -27,12 +27,17 @@ export function useAuth() {
   }
 
   const login = async (payload: LoginDTO): Promise<UserModel | null> => {
-    const response = await $axios.post(
-      '/auth/login',
-      { email: payload.email, password: payload.password },
-      { withCredentials: true }
-    )
-    const { user } = response.data
+    const response = await $axios.post('/auth/login', {
+      email: payload.email,
+      password: payload.password,
+    })
+
+    const { user, accessToken, refreshToken } = response.data
+
+    // Store tokens in localStorage (or Pinia/secure storage)
+    localStorage.setItem('token', accessToken)
+    localStorage.setItem('refreshToken', refreshToken)
+
     const auth = useAuthStore()
     auth.setUser(user)
     return user

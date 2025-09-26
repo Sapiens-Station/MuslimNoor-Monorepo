@@ -6,30 +6,26 @@ export const useUser = () => {
   const loading = useState<boolean>('userLoading', () => false)
   const error = useState<string>('userError', () => '')
 
-  const fetchUser = async () => {
-    if (!process.client) return null
+const fetchUser = async () => {
+  if (!process.client) return null
 
-    const token = localStorage.getItem('token')
-    if (!token) return null
+  const token = localStorage.getItem('token')
+  if (!token) return null
 
-    loading.value = true
-    error.value = ''
-    try {
-      const { $axios } = useNuxtApp()
-      console.log('🔍 Fetching user profile with token:', token)
-      const res = await $axios.get('/users/profile', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      console.log('✅ fetchUser success:', res.data)
-      profile.value = res.data as UserModel
-    } catch (err: any) {
-      error.value = err?.message || 'Failed to load user profile'
-      console.error('❌ fetchUser error:', err)
-    } finally {
-      loading.value = false
-    }
-    return profile.value
+  loading.value = true
+  error.value = ''
+  try {
+    const { $axios } = useNuxtApp()
+    const res = await $axios.get('/users/profile') // no need to set headers manually
+    profile.value = res.data as UserModel
+  } catch (err: any) {
+    error.value = err?.message || 'Failed to load user profile'
+  } finally {
+    loading.value = false
   }
+  return profile.value
+}
+
 
   const updateUser = async (payload: UserUpdateDTO) => {
     if (!process.client) return null

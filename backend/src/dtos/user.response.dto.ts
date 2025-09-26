@@ -7,6 +7,7 @@ export class UserResponseDto {
   mosqueId?: string | Mosque// instead of string
   fcmTokens: string[];
   role: string;
+  contactNumber: string;
   favoriteHajjPackages: string[];
   favoriteUmrahPackages: string[];
   favoriteEvents: string[];

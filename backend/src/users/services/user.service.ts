@@ -240,6 +240,7 @@ export class UserService {
       name: user.name,
       email: user.email,
       mosqueId: user.mosqueId ?? undefined,
+      contactNumber: user.contactNumber ?? '',
       fcmTokens: user.fcmTokens ?? [],
       role: user.role,
       favoriteHajjPackages: user.favoriteHajjPackages ?? [],
