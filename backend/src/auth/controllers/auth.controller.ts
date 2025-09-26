@@ -56,7 +56,7 @@ export class AuthController {
       path: '/',
     })
 
-    return { user }
+    return { user } // ✅ Return tokens in body as well for flexibility
   }
 
   @Post('refresh')

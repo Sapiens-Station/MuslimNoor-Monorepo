@@ -21,14 +21,18 @@ export function useJamat() {
   // Public APIs
   const getToday = async (mosqueId: string, date: string) => {
     const res = await $axios.get<JamatSchedule>('/jamat/today', {
-      params: { mosqueId, date }
+      params: { mosqueId, date },
     })
+    console.log('getTenDays Jamat schedule', res.data)
     return res.data
   }
 
-  const getTenDays = async (mosqueId: string, from?: string) => {
+  const getTenDays = async (
+    mosqueId: string,
+    from: string = new Date().toISOString().split('T')[0]
+  ) => {
     const res = await $axios.get<JamatSchedule[]>('/jamat/ten-days', {
-      params: { mosqueId, from }
+      params: { mosqueId, from },
     })
     return res.data
   }
@@ -43,20 +47,29 @@ export function useJamat() {
     return res.data
   }
 
-  const updateSchedule = async (id: string, payload: {
-    mosqueId: string
-    date: string
-    jamatTimes: JamatTime[]
-  }) => {
+  const updateSchedule = async (
+    id: string,
+    payload: {
+      mosqueId: string
+      date: string
+      jamatTimes: JamatTime[]
+    }
+  ) => {
     const res = await $axios.put<JamatSchedule>(`/jamat/${id}`, payload)
     return res.data
   }
 
-  const updatePrayerTime = async (id: string, payload: {
-    prayerName: JamatTime['prayerName']
-    iqamaTime: string
-  }) => {
-    const res = await $axios.patch<JamatSchedule>(`/jamat/${id}/prayer`, payload)
+  const updatePrayerTime = async (
+    id: string,
+    payload: {
+      prayerName: JamatTime['prayerName']
+      iqamaTime: string
+    }
+  ) => {
+    const res = await $axios.patch<JamatSchedule>(
+      `/jamat/${id}/prayer`,
+      payload
+    )
     return res.data
   }
 
@@ -82,6 +95,6 @@ export function useJamat() {
     updateSchedule,
     updatePrayerTime,
     autoFill,
-    deleteSchedule
+    deleteSchedule,
   }
 }

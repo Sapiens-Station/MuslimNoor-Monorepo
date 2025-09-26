@@ -117,7 +117,8 @@ Frontend runs at: `http://localhost:3001`
 | ---- | -------------------------------------- | ------ | --------------------------------------------- | ---------------------------- |
 | [x]  | `/auth/signup`                         | POST   | Register new user                             | Public                       |
 | [x]  | `/auth/login`                          | POST   | Login & return JWT                            | Public                       |
-| [x]  | `/auth/me`                             | GET    | Current authenticated user profile            | user, mosqueAuthority, admin |
+| [ ]  | `/auth/refresh`                        | POST   | Rotate refresh, issue aceess + refresh token  | user, mosqueAuthority, admin |
+| [ ]  | `/auth/logout`                         | POST   | Clear cookies + remove refresh token from DB  | user, mosqueAuthority, admin |
 | [x]  | `/users/profile`                       | GET    | Current user profile (alias of /auth/me)      | user, mosqueAuthority, admin |
 | [x]  | `/users/update`                        | PUT    | Update own profile (name, contact, password)  | user, mosqueAuthority, admin |
 | [x]  | `/users`                               | POST   | Create a new user                             | admin                        |

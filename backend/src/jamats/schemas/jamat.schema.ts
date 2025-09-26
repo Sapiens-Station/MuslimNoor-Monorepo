@@ -1,7 +1,7 @@
 // src/jamats/schemas/jamat.schema.ts
 
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document, Types } from 'mongoose'
 
 export enum JamatStatus {
   PENDING = 'pending',
@@ -14,19 +14,19 @@ export type PrayerName =
   | 'Asr'
   | 'Maghrib'
   | 'Isha'
-  | 'Jumuah';
+  | 'Jumuah'
 
 @Schema({ timestamps: true })
 export class Jamat extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Mosque', required: true })
-  mosqueId: Types.ObjectId;
+  mosqueId: Types.ObjectId
 
   @Prop({ type: Date, required: true })
-  date: Date;
+  date: Date
 
   // optional dayKey if using
   @Prop({ type: String })
-  dayKey?: string;
+  dayKey?: string
 
   @Prop({
     type: [
@@ -43,17 +43,22 @@ export class Jamat extends Document {
     default: [],
   })
   jamatTimes: {
-    prayerName: PrayerName;
-    iqamaTime: string;
-    azanTime?: string;
-  }[];
+    prayerName: PrayerName
+    iqamaTime: string
+    azanTime?: string
+  }[]
 
   @Prop({ type: Types.ObjectId, ref: 'User' })
-  createdBy?: Types.ObjectId;
+  createdBy?: Types.ObjectId
 
-  @Prop({ type: String, enum: Object.values(JamatStatus), default: JamatStatus.PENDING })
-  status: JamatStatus;
+  @Prop({
+    type: String,
+    enum: Object.values(JamatStatus),
+    default: JamatStatus.PENDING,
+  })
+  status: JamatStatus
 }
 
-export type JamatDocument = Jamat & Document;
-export const JamatSchema = SchemaFactory.createForClass(Jamat);
+export type JamatDocument = Jamat & Document
+export const JamatSchema = SchemaFactory.createForClass(Jamat)
+JamatSchema.index({ mosqueId: 1, date: 1 }, { unique: true })

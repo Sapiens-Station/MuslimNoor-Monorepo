@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue"
 import { useJamat, type JamatSchedule } from "~/composables/useJamat"
 import { useToast, TwButton } from "vue3-tailwind"
+import { useAuthStore } from "~/stores/auth"
 
 const { getTenDays, deleteSchedule, autoFill } = useJamat()
 const { success, error } = useToast()
@@ -9,7 +10,9 @@ const { success, error } = useToast()
 const schedules = ref<JamatSchedule[]>([])
 const loading = ref(true)
 
-const mosqueId = "replace-with-loggedin-mosqueId" // TODO: from auth
+const auth = useAuthStore()
+
+const mosqueId = auth.mosqueId // TODO: from auth
 
 onMounted(async () => {
   try {
@@ -40,7 +43,7 @@ async function handleAutoFill() {
       lon: -97.4,
       date: new Date().toISOString().split("T")[0],
     })
-    schedules.value = await getTenDays(mosqueId)
+    schedules.value = await getTenDays(mosqueId, new Date().toISOString().split("T")[0])
     success({ message: "Auto-fill complete", lifetime: 3000 })
   } catch (err: any) {
     error({ message: err.message, lifetime: 5000 })

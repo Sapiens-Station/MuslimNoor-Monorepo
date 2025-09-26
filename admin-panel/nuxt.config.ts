@@ -1,10 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   app: {
-    pageTransition: { name: "page", mode: "out-in" },
+    pageTransition: { name: 'page', mode: 'out-in' },
   },
 
-  css: ["~/assets/css/main.css"],
+  css: ['~/assets/css/main.css'],
 
   postcss: {
     plugins: {
@@ -18,51 +18,60 @@ export default defineNuxtConfig({
     strict: true,
   },
 
+  nitro: {
+    devProxy: {
+      '/api/': {
+        target: 'http://localhost:3000/',
+        changeOrigin: true,
+      },
+    },
+  },
+
   runtimeConfig: {
-    apiSecret: "",
+    apiSecret: '',
     public: {
-      apiBase: 'http://localhost:3000', 
+      apiBase: '',
     },
   },
 
   modules: [
-    "@pinia/nuxt",
+    '@pinia/nuxt',
     // "@pinia-plugin-persistedstate/nuxt",
-    "@vite-pwa/nuxt",
-    "@vueuse/nuxt",
-    "@nuxtjs/tailwindcss",
+    '@vite-pwa/nuxt',
+    '@vueuse/nuxt',
+    '@nuxtjs/tailwindcss',
   ],
 
   pwa: {
-    registerType: "autoUpdate",
+    registerType: 'autoUpdate',
     manifest: {
-      name: "Nuxt 3 admin template",
-      short_name: "Nuxt3 Admin",
-      theme_color: "#ffffff",
+      name: 'Nuxt 3 admin template',
+      short_name: 'Nuxt3 Admin',
+      theme_color: '#ffffff',
       icons: [
         {
-          src: "pwa-192x192.png",
-          sizes: "192x192",
-          type: "image/png",
+          src: 'pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
         },
         {
-          src: "pwa-512x512.png",
-          sizes: "512x512",
-          type: "image/png",
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
         },
         {
-          src: "pwa-512x512.png",
-          sizes: "512x512",
-          type: "image/png",
-          purpose: "any maskable",
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any maskable',
         },
       ],
     },
     workbox: {
-      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
     },
     injectManifest: {
-      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
     },
     client: {
       installPrompt: true,
@@ -73,11 +82,11 @@ export default defineNuxtConfig({
     devOptions: {
       enabled: true,
       suppressWarnings: true,
-      navigateFallback: "/",
+      navigateFallback: '/',
       navigateFallbackAllowlist: [/^\/$/],
-      type: "module",
+      type: 'module',
     },
   },
 
-  compatibilityDate: "2025-02-21",
-});
+  compatibilityDate: '2025-02-21',
+})
