@@ -15,7 +15,7 @@ import { CreateUserDto } from '~/dtos/create-user.dto'
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument | null>) {}
 
   async findAll(): Promise<User[]> {
     try {
@@ -84,7 +84,7 @@ export class UserService {
   }
 
   async createUser(dto: CreateUserDto
-  ): Promise<User> {
+  ): Promise<UserDocument | null> {
     try {
       // Check if email already exists
       const existing = await this.userModel
@@ -134,7 +134,7 @@ export class UserService {
     }
   }
 
-  async updateRole(userId: string, role: UserRole): Promise<User> {
+  async updateRole(userId: string, role: UserRole): Promise<UserDocument | null> {
     try {
       const updated = await this.userModel
         .findByIdAndUpdate(userId, { role }, { new: true })
@@ -155,7 +155,7 @@ export class UserService {
     }
   }
 
-  async addFcmToken(userId: string, token: string): Promise<User> {
+  async addFcmToken(userId: string, token: string): Promise<UserDocument | null> {
     try {
       const updated = await this.userModel
         .findByIdAndUpdate(
@@ -188,7 +188,7 @@ export class UserService {
     }
   }
 
-  async addFavoriteHajj(userId: string, packageId: string): Promise<User> {
+  async addFavoriteHajj(userId: string, packageId: string): Promise<UserDocument | null> {
     try {
       return await this.userModel
         .findByIdAndUpdate(
@@ -204,7 +204,7 @@ export class UserService {
     }
   }
 
-  async addFavoriteUmrah(userId: string, packageId: string): Promise<User> {
+  async addFavoriteUmrah(userId: string, packageId: string): Promise<UserDocument | null> {
     try {
       return await this.userModel
         .findByIdAndUpdate(
@@ -220,7 +220,7 @@ export class UserService {
     }
   }
 
-  async addFavoriteEvent(userId: string, eventId: string): Promise<User> {
+  async addFavoriteEvent(userId: string, eventId: string): Promise<UserDocument | null> {
     try {
       return await this.userModel
         .findByIdAndUpdate(

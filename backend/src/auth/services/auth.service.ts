@@ -22,7 +22,6 @@ export class AuthService {
   // 🔑 Login: validate & issue tokens (access + refresh)
   async validateUserAndGetTokens(loginDto: LoginDto) {
     try {
-      console.log('User logged in:', loginDto)
       const user = (await this.userService.findByEmailWithPassword(
         loginDto.email
       )) as {
@@ -70,8 +69,6 @@ export class AuthService {
         role: user.role,
         mosqueId: user.mosqueId,
       }
-
-      
 
       return { user: safeUser, accessToken, refreshToken }
     } catch (err) {
