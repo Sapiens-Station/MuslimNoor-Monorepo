@@ -45,14 +45,29 @@ export class JamatService {
   }
 
   // ✅ Get jamat schedules for 10 consecutive days
+  // ✅ Get jamat schedules for 10 consecutive days
   async getTenDays(mosqueId: string, from = new Date().toISOString()) {
-    const start = startOfDay(new Date(from))
-    const end = addDays(start, 10)
-    return this.jamatModel
-      .find({ mosqueId, date: { $gte: start, $lt: end } })
+    console.log(
+      'Fetching 10-day jamat schedule from:',
+      from,
+      'for mosque:',
+      mosqueId
+    )
+
+    const start = startOfDay(new Date(from)) // normalize start
+    const end = addDays(start, 10) // 10 days ahead
+
+    // 🔑 Use $gte/$lt to fetch inclusive start, exclusive end
+    const schedules = await this.jamatModel
+      .find({
+        mosqueId: new Types.ObjectId(mosqueId), // ✅ ensure ObjectId
+        date: { $gte: start, $lt: end },
+      })
       .sort({ date: 1 })
       .lean()
       .exec()
+
+    return schedules
   }
 
   // Protect: MosqueAuthority can only update their own mosque
@@ -175,6 +190,7 @@ export class JamatService {
           iqamaTime: String(time),
         })
       )
+      console.log('Auto-filled jamat times:', jamatTimes)
 
       // Reuse createSchedule → ensures status & createdBy
       return this.createSchedule(

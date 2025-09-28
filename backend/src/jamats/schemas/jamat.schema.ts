@@ -15,6 +15,8 @@ export type PrayerName =
   | 'Maghrib'
   | 'Isha'
   | 'Jumuah'
+  | 'Tarabih'
+  | 'Tahajjud'
 
 @Schema({ timestamps: true })
 export class Jamat extends Document {
@@ -33,7 +35,7 @@ export class Jamat extends Document {
       {
         prayerName: {
           type: String,
-          enum: ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha', 'Jumuah'],
+          enum: ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha', 'Jumuah', 'Tarabih', 'Tahajjud'],
           required: true,
         },
         iqamaTime: { type: String, required: true },

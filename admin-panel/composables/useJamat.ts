@@ -1,5 +1,6 @@
 // ~/composables/useJamat.ts
 import { useNuxtApp } from '#app'
+import { useAuthStore } from '~/stores/auth'
 
 export interface JamatTime {
   prayerName: 'Fajr' | 'Dhuhr' | 'Asr' | 'Maghrib' | 'Isha' | 'Jumuah'
@@ -17,11 +18,13 @@ export interface JamatSchedule {
 
 export function useJamat() {
   const { $axios } = useNuxtApp()
+  const auth = useAuthStore()
+  const userMosqueId = auth.mosqueId
 
   // Public APIs
   const getToday = async (mosqueId: string, date: string) => {
     const res = await $axios.get<JamatSchedule>('/jamat/today', {
-      params: { mosqueId, date },
+      params: { userMosqueId, date },
     })
     console.log('getTenDays Jamat schedule', res.data)
     return res.data
@@ -32,7 +35,7 @@ export function useJamat() {
     from: string = new Date().toISOString().split('T')[0]
   ) => {
     const res = await $axios.get<JamatSchedule[]>('/jamat/ten-days', {
-      params: { mosqueId, from },
+      params: { userMosqueId, from },
     })
     return res.data
   }

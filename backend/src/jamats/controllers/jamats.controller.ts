@@ -26,13 +26,13 @@ export class JamatController {
   constructor(private readonly jamatService: JamatService) {}
 
   @Get('today')
-  getToday(@Query('mosqueId') mosqueId: string, @Query('date') date: string) {
+  getToday(@Query('userMosqueId') mosqueId: string, @Query('date') date: string) {
     return this.jamatService.getSchedule(mosqueId, date)
   }
 
   @Get('ten-days')
   getTenDays(
-    @Query('mosqueId') mosqueId: string,
+    @Query('userMosqueId') mosqueId: string,
     @Query('from') from?: string
   ) {
     return this.jamatService.getTenDays(mosqueId, from)
