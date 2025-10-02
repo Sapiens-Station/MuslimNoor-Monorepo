@@ -10,11 +10,11 @@ import {
   Req,
 } from '@nestjs/common'
 import { JamatService } from '../services/jamat.service'
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard'
-import { RolesGuard } from 'src/auth/guards/roles.guard'
-import { Roles } from 'src/auth/decorators/roles.decorator'
-import { UserRole } from 'src/users/schemas/user.schema'
 import { BlockJamatDto } from '~/dtos/block-jamat.dto'
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { Roles } from '../../auth/decorators/roles.decorator';
+import { UserRole } from '../../users/schemas/user.schema';
 
 @Controller('jamat')
 export class JamatController {

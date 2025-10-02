@@ -28,10 +28,11 @@ export class AuthService {
         _id: string
         password: string
         role: string
-        mosqueId?: string
+        mosqueId?: { _id: string; name: string } | string
         email: string
         name: string
       }
+
       if (!user) throw new UnauthorizedException('Invalid credentials')
 
       const valid = await this.userService.verifyPassword(
@@ -40,35 +41,45 @@ export class AuthService {
       )
       if (!valid) throw new UnauthorizedException('Invalid credentials')
 
+      // 🔑 JWT payload → only IDs, no extra objects
       const payload = {
         sub: user._id.toString(),
         role: user.role,
-        mosqueId: user.mosqueId?.toString(),
+        mosqueId:
+          typeof user.mosqueId === 'object'
+            ? user.mosqueId._id.toString()
+            : user.mosqueId?.toString(),
       }
 
-      // ✅ Access token (short)
       const accessToken = this.jwtService.sign(payload, {
         secret: process.env.JWT_SECRET,
         expiresIn: process.env.JWT_EXPIRES_IN || '15m',
       })
 
-      // ✅ Refresh token (long, different secret)
-      // const refreshToken = this.jwtService.sign(payload, {
-      //   secret: process.env.JWT_REFRESH_SECRET,
-      //   expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
-      // })
-
-      // ✅ Store refreshToken hash in DB
-      // const hashedRt = await bcrypt.hash(refreshToken, 10)
-      // await this.userService.setRefreshToken(user._id.toString(), hashedRt)
-
+      // ✅ Safe user response → only id + name for mosque
       const safeUser = {
         _id: user._id,
         email: user.email,
         name: user.name,
         role: user.role,
-        mosqueId: user.mosqueId,
+        mosqueId:
+          typeof user.mosqueId === 'object'
+            ? { _id: user.mosqueId._id.toString(), name: user.mosqueId.name }
+            : user.mosqueId
+              ? { _id: user.mosqueId.toString(), name: undefined }
+              : undefined,
       }
+
+      
+  // ✅ Refresh token (long, different secret)
+  // const refreshToken = this.jwtService.sign(payload, {
+  //   secret: process.env.JWT_REFRESH_SECRET,
+  //   expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
+  // })
+
+  // ✅ Store refreshToken hash in DB
+  // const hashedRt = await bcrypt.hash(refreshToken, 10)
+  // await this.userService.setRefreshToken(user._id.toString(), hashedRt)
 
       return { user: safeUser, accessToken }
     } catch (err) {
@@ -77,6 +88,7 @@ export class AuthService {
       throw new InternalServerErrorException('Login failed')
     }
   }
+
 
   // 🔄 Refresh tokens: verify, rotate, return new pair
   // async refreshTokens(rawToken: string) {
@@ -114,7 +126,7 @@ export class AuthService {
 
   async logout(userId: string): Promise<void> {
     // await this.userService.removeRefreshToken(userId)
-    return;
+    return
   }
 
   // private async signAccessToken(payload: JwtPayload): Promise<string> {

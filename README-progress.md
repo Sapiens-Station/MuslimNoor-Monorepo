@@ -161,6 +161,7 @@ Frontend runs at: `http://localhost:3001`
 | [x]  | `/events`          | GET    | List mosque events | Public                 |
 | [x]  | `/events/:id`      | GET    | Get single event   | Public                 |
 | [x]  | `/events/upcoming` | GET    | Get upcoming event | Public                 |
+| [x]  | `/events/today`    | GET    | Get today's event  | Public                 |
 | [x]  | `/events`          | POST   | Create event       | mosqueAuthority, admin |
 | [x]  | `/events/:id`      | PUT    | Edit event         | mosqueAuthority, admin |
 | [x]  | `/events/:id`      | DELETE | Remove event       | mosqueAuthority, admin |
@@ -170,7 +171,8 @@ Frontend runs at: `http://localhost:3001`
 
 | Done | Endpoint                        | Method | Purpose                    | Access                 |
 | ---- | ------------------------------- | ------ | -------------------------- | ---------------------- |
-| [x]  | `/mosques`                      | GET    | List mosques               | Public                  |
+| [x]  | `/mosques`                      | GET    | List mosques               | Public                 |
+| [x]  | `/mosques/:id`                  | GET    | Get single mosque          | Public                 |
 | [x]  | `/mosques`                      | POST   | Create new mosque          | admin                  |
 | [x]  | `/mosques/:id`                  | PUT    | Update mosque details      | admin                  |
 | [x]  | `/mosques/:id`                  | DELETE | Delete mosque              | admin                  |

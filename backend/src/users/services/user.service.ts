@@ -59,7 +59,10 @@ export class UserService {
   }
 
   async findByEmailWithPassword(email: string): Promise<UserDocument | null> {
-    return this.userModel.findOne({ email }).populate('mosqueId').exec()
+    return this.userModel
+      .findOne({ email })
+      .populate('mosqueId', '_id name') // ✅ only _id + name
+      .exec()
   }
 
   async findByMosque(mosqueId: string): Promise<User[]> {
