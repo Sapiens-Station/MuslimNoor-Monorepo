@@ -12,8 +12,8 @@ export class NotificationSchedulerController {
     private readonly schedulerService: NotificationSchedulerService
   ) {}
 
-  @Post()
-  async scheduleToday() {
-    return this.schedulerService.scheduleTodayJamatNotifications()
-  }
+  // @Post()
+  // async scheduleToday() {
+  //   return this.schedulerService.scheduleTodayJamatNotifications()
+  // }
 }

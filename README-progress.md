@@ -136,14 +136,14 @@ Frontend runs at: `http://localhost:3001`
 
 ### 2. Jamat Schedule
 
-| Done | Endpoint                      | Method | Purpose                                  | Access                 |
-| ---- | ----------------------------- | ------ | ---------------------------------------- | ---------------------- |
-| [x]  | `/jamat/today`                | GET    | Today’s jamat times                      | Public                 |
-| [x]  | `/jamat/ten-days`             | GET    | 10-day jamat schedule                    | user, guest            |
-| [x]  | `/jamat`                      | POST   | Create or upsert a jamat schedule        | mosqueAuthority, admin |
-| [x]  | `/jamat/:id/prayer`           | PATCH  | Update a single prayer’s iqama time      | mosqueAuthority, admin |
-| [x]  | `/jamat/auto-fill`            | POST   | Auto-fill jamat times by location        | mosqueAuthority, admin |
-| [x]  | `/jamat/:id`                  | DELETE | Delete an existing jamat schedule        | mosqueAuthority, admin |
+| Done | Endpoint                      | Method | Purpose                                       | Access                 |
+| ---- | ----------------------------- | ------ | --------------------------------------------- | ---------------------- |
+| [x]  | `/jamat/today`                | GET    | Today’s jamat times                           | Public                 |
+| [x]  | `/jamat/ten-days`             | GET    | 10-day jamat schedule                         | user, guest            |
+| [x]  | `/jamat`                      | POST   | Create 10 days block jamat schedule           | mosqueAuthority, admin |
+| [x]  | `/jamat`                      | PUT    | Update/Replace 10 days block jamat schedule   | mosqueAuthority, admin |
+| [ ]  | `/jamat/:id/approve`          | PUT    | Approve a schedule                            | mosqueAuthority, admin |
+| [ ]  | `/jamat/:id`                  | DELETE | Delete an existing schedule                   | mosqueAuthority, admin |
 
 
 ### 3. Prayer-times

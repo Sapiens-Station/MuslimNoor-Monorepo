@@ -1,5 +1,3 @@
-// src/jamats/schemas/jamat.schema.ts
-
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Document, Types } from 'mongoose'
 
@@ -7,16 +5,6 @@ export enum JamatStatus {
   PENDING = 'pending',
   APPROVED = 'approved',
 }
-
-export type PrayerName =
-  | 'Fajr'
-  | 'Dhuhr'
-  | 'Asr'
-  | 'Maghrib'
-  | 'Isha'
-  | 'Jumuah'
-  | 'Tarabih'
-  | 'Tahajjud'
 
 @Schema({ timestamps: true })
 export class Jamat extends Document {
@@ -26,29 +14,20 @@ export class Jamat extends Document {
   @Prop({ type: Date, required: true })
   date: Date
 
-  // optional dayKey if using
   @Prop({ type: String })
   dayKey?: string
 
-  @Prop({
-    type: [
-      {
-        prayerName: {
-          type: String,
-          enum: ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha', 'Jumuah', 'Tarabih', 'Tahajjud'],
-          required: true,
-        },
-        iqamaTime: { type: String, required: true },
-        azanTime: { type: String },
-      },
-    ],
-    default: [],
-  })
-  jamatTimes: {
-    prayerName: PrayerName
-    iqamaTime: string
-    azanTime?: string
-  }[]
+  // Fixed fields for each prayer
+  @Prop({ type: String, required: true }) fajr: string
+  @Prop({ type: String, required: true }) zuhr: string
+  @Prop({ type: String, required: true }) asr: string
+  @Prop({ type: String, required: true }) maghrib: string
+  @Prop({ type: String, required: true }) esha: string
+  @Prop({ type: String, required: true }) jumuah: string
+
+  @Prop({ type: String }) iftar?: string
+  @Prop({ type: String }) tarabeeh?: string
+  @Prop({ type: String }) tahajjud?: string
 
   @Prop({ type: Types.ObjectId, ref: 'User' })
   createdBy?: Types.ObjectId
@@ -63,4 +42,6 @@ export class Jamat extends Document {
 
 export type JamatDocument = Jamat & Document
 export const JamatSchema = SchemaFactory.createForClass(Jamat)
+
+// Ensure one schedule per mosque per day
 JamatSchema.index({ mosqueId: 1, date: 1 }, { unique: true })
