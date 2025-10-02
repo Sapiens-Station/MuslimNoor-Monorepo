@@ -22,7 +22,6 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard'
         signOptions: { expiresIn: '1h' },
       }),
     }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), // ✅ Registers UserModel
     UsersModule, // ✅ Ensure UserModule is imported
   ],
   controllers: [AuthController],

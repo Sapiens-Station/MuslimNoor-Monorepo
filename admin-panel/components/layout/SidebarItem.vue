@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { TwFeather } from "vue3-tailwind";
-import { useSidebarStore } from "~~/store/sidebar";
+import { useSidebarStore } from "~~/stores/sidebar";
 
 interface Item {
   isTitle: boolean

@@ -25,4 +25,6 @@ export class Mosque extends Document {
   };
 }
 
+
+export type MosqueDocument = Mosque & Document;
 export const MosqueSchema = SchemaFactory.createForClass(Mosque);

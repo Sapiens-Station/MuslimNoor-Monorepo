@@ -1,182 +1,157 @@
-// src/jamats/services/jamat.service.ts
-import { Injectable, ForbiddenException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { Jamat, JamatDocument } from '../schemas/jamat.schema';
-import { PrayerTimesService } from 'src/prayer-time/services/prayer-times.service';
-import { UserRole } from 'src/users/schemas/user.schema';
-import { PrayerName } from '../schemas/jamat.schema';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
+import { Model, Types } from 'mongoose'
+import { Jamat, JamatDocument, JamatStatus } from '../schemas/jamat.schema'
+import { UserRole } from 'src/users/schemas/user.schema'
+import { startOfDay, addDays } from 'date-fns'
+import { generateTenDays } from '../utils/date.util'
+import { BlockJamatDto } from '~/dtos/block-jamat.dto'
+import dayjs from 'dayjs'
+
+type CurrentUser = {
+  _id: string | Types.ObjectId
+  role: UserRole
+  mosqueId?: string | Types.ObjectId
+}
 
 @Injectable()
 export class JamatService {
   constructor(
-    @InjectModel(Jamat.name)
-    private jamatModel: Model<JamatDocument>,
-    private readonly prayerTimesService: PrayerTimesService,
+    @InjectModel(Jamat.name) private jamatModel: Model<JamatDocument>
   ) {}
 
-  // Get a single schedule by date and mosque (public)
+  // ✅ One day schedule
   async getSchedule(mosqueId: string, date: string) {
-    return this.jamatModel.findOne({
-      mosqueId,
-      date: new Date(date),
-    });
+    const dayKey = new Date(date).toISOString().split('T')[0] // "2025-10-03"
+    console.log('Fetching schedule for mosqueId:', mosqueId, 'on date:', dayKey)
+
+    const schedule = await this.jamatModel
+      .findOne({
+        mosqueId: new Types.ObjectId(mosqueId), // <-- critical fix
+        dayKey,
+      })
+      .lean()
+      .exec()
+
+    console.log('schedule', schedule)
+    return schedule
   }
 
-  // Get schedules for the next 10 days (public)
+  // ✅ 10 consecutive days
   async getTenDays(mosqueId: string, from = new Date().toISOString()) {
-    const start = new Date(from);
-    const end = new Date(start);
-    end.setDate(start.getDate() + 9);
+    const start = new Date(from).toISOString().split('T')[0] // "2025-10-03"
+    const end = addDays(start, 10)
     return this.jamatModel
       .find({
-        mosqueId,
-        date: { $gte: start, $lte: end },
+        mosqueId: new Types.ObjectId(mosqueId),
+        date: { $gte: start, $lt: end },
       })
       .sort({ date: 1 })
-      .exec();
+      .lean()
+      .exec()
   }
 
-  // Create or upsert a schedule (requires mosqueAuthority or admin)
-  async createSchedule(
-    body: {
-      mosqueId: string;
-      date: string;
-      jamatTimes: { prayerName: PrayerName; iqamaTime: string; azanTime?: string }[];
-    },
-    user: { role: string; mosqueId: string; _id: string },
-  ) {
-    // Only allow mosqueAuthority to create schedules in their own mosque
-    if (
-      user.role === UserRole.MOSQUE_AUTHORITY &&
-      user.mosqueId?.toString() !== body.mosqueId
-    ) {
-      throw new ForbiddenException('Cannot create schedule for another mosque');
+  private assertSameMosqueOrAdmin(
+    user: CurrentUser,
+    targetMosqueId: Types.ObjectId | string
+  ): void {
+    let userMosqueId: string | null = null
+    const rawUserMosqueId = user.mosqueId
+
+    console.log('Raw User Mosque ID:', rawUserMosqueId)
+    console.log('Target Mosque ID:', targetMosqueId)
+
+    if (rawUserMosqueId) {
+      if (typeof rawUserMosqueId === 'string') {
+        // Extract the ObjectId from the string using the actual pattern in your log
+        const objectIdMatch = rawUserMosqueId.match(
+          /ObjectId\('([0-9a-fA-F]{24})'\)/
+        )
+        if (objectIdMatch && objectIdMatch[1]) {
+          userMosqueId = objectIdMatch[1]
+        } else {
+          // If no ObjectId pattern found, check if it's already a plain ID
+          userMosqueId = rawUserMosqueId.length === 24 ? rawUserMosqueId : null
+        }
+      } else if (rawUserMosqueId instanceof Types.ObjectId) {
+        userMosqueId = rawUserMosqueId.toHexString()
+      } else if (typeof rawUserMosqueId === 'object' && rawUserMosqueId._id) {
+        const nestedId = rawUserMosqueId._id
+        userMosqueId =
+          typeof nestedId === 'string' ? nestedId : nestedId.toHexString()
+      }
     }
 
-    return this.jamatModel.findOneAndUpdate(
-      { mosqueId: body.mosqueId, date: new Date(body.date) },
-      {
-        mosqueId: new Types.ObjectId(body.mosqueId),
-        date: new Date(body.date),
-        jamatTimes: body.jamatTimes,
-        createdBy: new Types.ObjectId(user._id),
-      },
-      { upsert: true, new: true },
-    );
-  }
+    // Normalize target ID
+    const targetId =
+      typeof targetMosqueId === 'string'
+        ? targetMosqueId
+        : targetMosqueId.toHexString()
 
-  // Update a schedule by ID (requires mosqueAuthority or admin)
-  async updateSchedule(
-    id: string,
-    body: {
-      mosqueId: string;
-      date: string;
-      jamatTimes: { prayerName: PrayerName; iqamaTime: string; azanTime?: string }[];
-    },
-    user: { role: string; mosqueId: string },
-  ) {
-    const jamat = await this.jamatModel.findById(id);
-    if (!jamat) {
-      throw new Error('Jamat schedule not found.');
-    }
-    if (
-      user.role === UserRole.MOSQUE_AUTHORITY &&
-      user.mosqueId?.toString() !== jamat.mosqueId.toString()
-    ) {
-      throw new ForbiddenException('Cannot update another mosque’s schedule');
-    }
-    return this.jamatModel.findByIdAndUpdate(
-      id,
-      {
-        mosqueId: new Types.ObjectId(body.mosqueId),
-        date: new Date(body.date),
-        jamatTimes: body.jamatTimes,
-      },
-      { new: true },
-    );
-  }
+    console.log('Normalized userMosqueId:', userMosqueId)
+    console.log('Normalized targetId:', targetId)
+    console.log('Comparison result:', userMosqueId === targetId)
 
-  // Update a single prayer’s iqama time (requires mosqueAuthority or admin)
-  async updatePrayerTime(
-    id: string,
-    prayerName: PrayerName,
-    iqamaTime: string,
-    user: { role: string; mosqueId: string },
-  ) {
-    const jamat = await this.jamatModel.findById(id);
-    if (!jamat) {
-      throw new Error('Jamat schedule not found.');
-    }
-    if (
-      user.role === UserRole.MOSQUE_AUTHORITY &&
-      user.mosqueId?.toString() !== jamat.mosqueId.toString()
-    ) {
-      throw new ForbiddenException('Cannot update another mosque’s schedule');
-    }
-    jamat.jamatTimes = jamat.jamatTimes.map((item) =>
-      item.prayerName === prayerName
-        ? { ...item, iqamaTime }
-        : item,
-    );
-    return jamat.save();
-  }
-
-  // Auto-fill a schedule (requires mosqueAuthority or admin)
-  async autoFillSchedule(
-    body: { mosqueId: string; lat: number; lon: number; date: string },
-    user: { role: string; mosqueId: string },
-  ) {
-    if (
-      user.role === UserRole.MOSQUE_AUTHORITY &&
-      user.mosqueId?.toString() !== body.mosqueId
-    ) {
-      throw new ForbiddenException('Cannot auto-fill for another mosque');
-    }
-    try {
-      // Fetch prayer times from an external service
-      const prayerTimes = await this.prayerTimesService.getDailyPrayerTimes(
-        body.lat,
-        body.lon,
-        body.date,
-      );
-      // Map to jamatTimes array, casting prayerName to PrayerName
-      const jamatTimes = Object.entries(prayerTimes).map(([prayerName, time]) => ({
-        prayerName: prayerName as PrayerName,
-        iqamaTime: String(time),
-      }));
-      return this.createSchedule(
-        {
-          mosqueId: body.mosqueId,
-          date: body.date,
-          jamatTimes,
-        },
-        // Provide an object with role, mosqueId, and userId (_id) to satisfy type checking
-        { role: user.role, mosqueId: body.mosqueId, _id: user['?id'] },
-      );
-    } catch (error) {
-      throw new Error('Failed to auto-fill jamat times: ' + error.message);
+    if (!userMosqueId || userMosqueId !== targetId) {
+      throw new ForbiddenException('Cannot act on another mosque')
     }
   }
 
-  // Delete a schedule (requires mosqueAuthority or admin)
-  async deleteSchedule(id: string, user: { role: string; mosqueId: string }) {
-    const jamat = await this.jamatModel.findById(id);
-    if (!jamat) {
-      throw new Error('Jamat schedule not found.');
-    }
-    if (
-      user.role === UserRole.MOSQUE_AUTHORITY &&
-      user.mosqueId?.toString() !== jamat.mosqueId.toString()
-    ) {
-      throw new ForbiddenException('Cannot delete another mosque’s schedule');
-    }
-    await this.jamatModel.findByIdAndDelete(id);
-    return { message: 'Jamat schedule deleted successfully' };
+  // ✅ Create new 10-day block
+  async createTenDaysSchedule(body: BlockJamatDto, user: CurrentUser) {
+    this.assertSameMosqueOrAdmin(user, body.mosqueId)
+
+    // Canonical starting dayKey
+    const startDayKey = dayjs(body.startDate).format('YYYY-MM-DD')
+    const days = generateTenDays(startDayKey)
+
+    // Remove old block by dayKey
+    await this.jamatModel.deleteMany({
+      mosqueId: body.mosqueId,
+      dayKey: { $gte: startDayKey, $lte: days[days.length - 1].dayKey },
+    })
+
+    // Build new docs
+    const docs: Partial<Jamat>[] = days.map((d) => ({
+      mosqueId: new Types.ObjectId(body.mosqueId),
+      date: d.date, // still store a Date
+      dayKey: d.dayKey, // canonical key
+      fajr: body.fajr,
+      zuhr: body.zuhr,
+      asr: body.asr,
+      maghrib: body.maghrib,
+      esha: body.esha,
+      jumuah: body.jumuah,
+      iftar: body.iftar,
+      tarabeeh: body.tarabeeh,
+      tahajjud: body.tahajjud,
+      createdBy: new Types.ObjectId(user._id),
+      status: JamatStatus.PENDING,
+    }))
+
+    return this.jamatModel.insertMany(docs)
   }
 
-  async getJamatTimes(mosqueId: string, date: string) {
-    return this.jamatModel.findOne({ mosqueId, date });
+  // ✅ Replace existing 10-day block
+  async updateTenDaysSchedule(body: BlockJamatDto, user: CurrentUser) {
+    return this.createTenDaysSchedule(body, user) // same flow
   }
-  
+
+  // ✅ Approve schedule
+  async approveSchedule(id: string, user: CurrentUser) {
+    const jamat = await this.jamatModel.findById(id)
+    if (!jamat) throw new NotFoundException('Jamat schedule not found')
+
+    this.assertSameMosqueOrAdmin(user, jamat.mosqueId)
+
+    if (jamat.status === JamatStatus.APPROVED) return jamat
+
+    jamat.status = JamatStatus.APPROVED
+    await jamat.save()
+    return jamat
+  }
 }

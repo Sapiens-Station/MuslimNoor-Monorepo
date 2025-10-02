@@ -1,5 +1,5 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { Document, Types } from 'mongoose'
 
 export enum UserRole {
   USER = 'user',
@@ -8,46 +8,44 @@ export enum UserRole {
 }
 
 @Schema({ timestamps: true })
-export class User extends Document {
+export class User {
   @Prop({ required: true })
-  name: string;
+  name: string
 
   @Prop({ required: true, unique: true })
-  email: string;
+  email: string
 
   @Prop({ required: true })
-  password: string;
+  password: string
 
-  // Contact number (optional)
+  // @Prop({ required: false })
+  // refreshTokenHash?: string
+
   @Prop({ required: false })
-  contactNumber?: string;
+  contactNumber?: string
 
-  // Preferred mosque
   @Prop({ type: Types.ObjectId, ref: 'Mosque', required: false })
-  mosqueId?: Types.ObjectId;
+  mosqueId?: Types.ObjectId
 
-  // Device push tokens (FCM); store multiple for multi-device users
   @Prop({ type: [String], default: [] })
-  fcmTokens: string[];
+  fcmTokens: string[]
 
-  // Role (default user)
   @Prop({ type: String, enum: Object.values(UserRole), default: UserRole.USER })
-  role: UserRole;
+  role: UserRole
 
-  // Favorite packages and events
   @Prop({ type: [Types.ObjectId], ref: 'HajjPackage', default: [] })
-  favoriteHajjPackages: Types.ObjectId[];
+  favoriteHajjPackages: Types.ObjectId[]
 
   @Prop({ type: [Types.ObjectId], ref: 'UmrahPackage', default: [] })
-  favoriteUmrahPackages: Types.ObjectId[];
+  favoriteUmrahPackages: Types.ObjectId[]
 
   @Prop({ type: [Types.ObjectId], ref: 'Event', default: [] })
-  favoriteEvents: Types.ObjectId[];
+  favoriteEvents: Types.ObjectId[]
 
-  // Optional: store Stripe/PayPal customer ID for recurring donations
   @Prop({ required: false })
-  paymentCustomerId?: string;
+  paymentCustomerId?: string
 }
 
-export type UserDocument = User & Document;
-export const UserSchema = SchemaFactory.createForClass(User);
+// ✅ Here we add Document on export
+export type UserDocument = User & Document
+export const UserSchema = SchemaFactory.createForClass(User)

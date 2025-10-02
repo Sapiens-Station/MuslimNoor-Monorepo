@@ -3,25 +3,25 @@ import {
   IsEmail,
   IsString,
   MinLength,
-  IsEnum,
+  IsMongoId,
   IsOptional,
 } from 'class-validator'
-import { UserRole } from '../auth/roles.enum'
 
 export class RegisterDto {
   @IsString()
-  name: string
+  name: string;
 
   @IsEmail()
-  email: string
+  email: string;
 
   @IsString()
   @MinLength(6)
-  password: string
+  password: string;
 
+  // User selects mosque during registration
   @IsOptional()
-  @IsEnum(UserRole)
-  role?: UserRole // server defaults to USER
+  @IsMongoId()
+  mosqueId: string;
 }
 
 export class LoginDto {

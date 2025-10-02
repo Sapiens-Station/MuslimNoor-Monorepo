@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer'
 import {
   IsEmail,
   IsNotEmpty,
@@ -6,6 +7,7 @@ import {
   MinLength,
   IsMongoId,
 } from 'class-validator'
+import { Types } from 'mongoose'
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -31,4 +33,8 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   role?: string
+
+  @IsOptional()
+  @IsString()
+  contactNumber?: string
 }

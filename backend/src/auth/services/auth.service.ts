@@ -1,53 +1,145 @@
 // src/auth/services/auth.service.ts
 import {
   Injectable,
-  ConflictException,
   UnauthorizedException,
+  ForbiddenException,
+  InternalServerErrorException,
 } from '@nestjs/common'
-import { RegisterDto, LoginDto } from '../../dtos/auth.dto'
-import * as bcrypt from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt'
-import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
-import { User } from '../../users/schemas/user.schema'
-import { UserRole } from '../roles.enum'
+import { UserService } from '../../users/services/user.service'
+import { LoginDto } from '~/dtos/auth.dto'
+import * as bcrypt from 'bcryptjs'
+
+type JwtPayload = { sub: string; role: string; mosqueId?: string }
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
-    private jwt: JwtService
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService
   ) {}
 
-  async register(dto: RegisterDto) {
-    const exists = await this.userModel.findOne({ email: dto.email })
-    if (exists) throw new ConflictException('Email already exists')
-    const hashedPassword = await bcrypt.hash(dto.password, 10)
-    const role = dto.role ?? UserRole.USER // default role
-    const user = await this.userModel.create({
-      ...dto,
-      password: hashedPassword,
-      role,
-    })
-    return { id: user._id, email: user.email, role: user.role, name: user.name }
-  }
+  // 🔑 Login: validate & issue tokens (access + refresh)
+  async validateUserAndGetTokens(loginDto: LoginDto) {
+    try {
+      const user = (await this.userService.findByEmailWithPassword(
+        loginDto.email
+      )) as {
+        _id: string
+        password: string
+        role: string
+        mosqueId?: { _id: string; name: string } | string
+        email: string
+        name: string
+      }
 
-  // Used by LocalAuthGuard -> LocalStrategy.validate()
-  async login(user: any) {
-    const payload = {
-      sub: user._id.toString(),
-      role: user.role,
-      mosqueId: user.mosqueId?.toString(),
+      if (!user) throw new UnauthorizedException('Invalid credentials')
+
+      const valid = await this.userService.verifyPassword(
+        loginDto.password,
+        user.password
+      )
+      if (!valid) throw new UnauthorizedException('Invalid credentials')
+
+      // 🔑 JWT payload → only IDs, no extra objects
+      const payload = {
+        sub: user._id.toString(),
+        role: user.role,
+        mosqueId:
+          typeof user.mosqueId === 'object'
+            ? user.mosqueId._id.toString()
+            : user.mosqueId?.toString(),
+      }
+
+      const accessToken = this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET,
+        expiresIn: process.env.JWT_EXPIRES_IN || '15m',
+      })
+
+      // ✅ Safe user response → only id + name for mosque
+      const safeUser = {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        mosqueId:
+          typeof user.mosqueId === 'object'
+            ? { _id: user.mosqueId._id.toString(), name: user.mosqueId.name }
+            : user.mosqueId
+              ? { _id: user.mosqueId.toString(), name: undefined }
+              : undefined,
+      }
+
+      
+  // ✅ Refresh token (long, different secret)
+  // const refreshToken = this.jwtService.sign(payload, {
+  //   secret: process.env.JWT_REFRESH_SECRET,
+  //   expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
+  // })
+
+  // ✅ Store refreshToken hash in DB
+  // const hashedRt = await bcrypt.hash(refreshToken, 10)
+  // await this.userService.setRefreshToken(user._id.toString(), hashedRt)
+
+      return { user: safeUser, accessToken }
+    } catch (err) {
+      if (err instanceof UnauthorizedException) throw err
+      console.error('[AuthService] Error in login:', err)
+      throw new InternalServerErrorException('Login failed')
     }
-    return { access_token: await this.jwt.signAsync(payload) }
   }
 
-  // If not using LocalStrategy:
-  async loginWithCredentials(dto: LoginDto) {
-    const user = await this.userModel.findOne({ email: dto.email })
-    if (!user) throw new UnauthorizedException('Invalid credentials')
-    const ok = await bcrypt.compare(dto.password, user.password)
-    if (!ok) throw new UnauthorizedException('Invalid credentials')
-    return this.login(user)
+
+  // 🔄 Refresh tokens: verify, rotate, return new pair
+  // async refreshTokens(rawToken: string) {
+  //   let decoded: JwtPayload
+  //   try {
+  //     decoded = await this.jwtService.verifyAsync<JwtPayload>(rawToken, {
+  //       secret: process.env.JWT_REFRESH_SECRET!,
+  //     })
+  //   } catch {
+  //     throw new ForbiddenException('Invalid refresh token')
+  //   }
+
+  //   const storedHash = await this.userService.getRefreshTokenHash(decoded.sub)
+  //   if (!storedHash) throw new ForbiddenException('No refresh token on record')
+
+  //   const matches = await bcrypt.compare(rawToken, storedHash)
+  //   if (!matches) throw new ForbiddenException('Refresh token mismatch')
+
+  //   const payload: JwtPayload = {
+  //     sub: decoded.sub,
+  //     role: decoded.role,
+  //     mosqueId: decoded.mosqueId,
+  //   }
+
+  //   const accessToken = await this.signAccessToken(payload)
+  //   const refreshToken = await this.signRefreshToken(payload)
+
+  //   await this.userService.setRefreshToken(
+  //     decoded.sub,
+  //     await bcrypt.hash(refreshToken, 10)
+  //   )
+
+  //   return { accessToken, refreshToken }
+  // }
+
+  async logout(userId: string): Promise<void> {
+    // await this.userService.removeRefreshToken(userId)
+    return
   }
+
+  // private async signAccessToken(payload: JwtPayload): Promise<string> {
+  //   return this.jwtService.signAsync(payload, {
+  //     secret: process.env.JWT_SECRET!,
+  //     expiresIn: process.env.JWT_EXPIRES_IN || '15m',
+  //   })
+  // }
+
+  // private async signRefreshToken(payload: JwtPayload): Promise<string> {
+  //   return this.jwtService.signAsync(payload, {
+  //     secret: process.env.JWT_REFRESH_SECRET!,
+  //     expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
+  //   })
+  // }
 }

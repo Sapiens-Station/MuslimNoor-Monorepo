@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "module": "Node16",                            // ✅ Must match with moduleResolution
-    "moduleResolution": "Node16",                 // ✅ Modern resolution style
+    "module": "Node16",
+    "moduleResolution": "Node16",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2023",
+    "target": "ES2022",                     // ✅ slightly safer target for NestJS
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -16,12 +16,13 @@
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false,
     "useDefineForClassFields": false,
     "types": ["node"],
     "typeRoots": ["./node_modules/@types"],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "~/*": ["src/*"]
+    }
   },
   "ts-node": {
     "require": ["tsconfig-paths/register"]
